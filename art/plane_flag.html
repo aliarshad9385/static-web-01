@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>To: Annusha — the baddest b possible</title>
   <style>
     :root {
@@ -19,7 +20,7 @@
     /* A11y helpers */
     .skip{position:absolute; left:-9999px; top:0; background:#000; color:#fff; padding:6px 8px; z-index:9999}
     .skip:focus{left:10px; top:10px; border-radius:4px}
-    .home{ position: fixed; top: 12px; left: 14px; z-index: 50; font-size: 12px; color: var(--fg); text-decoration: none; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); padding: 6px 8px; border-radius: 8px; }
+    .home{ position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); left: calc(14px + env(safe-area-inset-left, 0px)); z-index: 50; font-size: 12px; color: var(--fg); text-decoration: none; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); padding: 6px 8px; border-radius: 8px; }
     .home:hover{ background: rgba(255,255,255,.12) }
     a:focus-visible{ outline:2px solid #fff; outline-offset:2px }
     .card {

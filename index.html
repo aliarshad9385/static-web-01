@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>For Annusha — ASCII Love</title>
   <meta name="description" content="A small website of ASCII love for Annusha — heart art, flights, notes, and tender bits." />
   <style>
@@ -148,7 +149,7 @@
     (function(){
       const style = document.createElement('style');
       style.textContent = `
-      .lovebtn{position:fixed; right:14px; bottom:14px; width:42px; height:42px; border-radius:50%;
+      .lovebtn{position:fixed; right:calc(14px + env(safe-area-inset-right, 0px)); bottom:calc(14px + env(safe-area-inset-bottom, 0px)); width:42px; height:42px; border-radius:50%;
         display:grid; place-items:center; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16);
         color:var(--muted); cursor:pointer; z-index:9999; }
       .lovebtn:focus-visible{ outline:2px solid #fff; outline-offset:2px }
@@ -174,9 +175,9 @@
       const links = [
         ['Home', home],
         ['Notepad Letter', home + 'notepad.html'],
-        ['Love Flight', home + 'annusha-love-flight/index.html'],
-        ['Flag + Plane', home + 'art/annusha_plane_flag.html'],
-        ['Cubist Plane', home + 'art/annusha_cubist_plane.html'],
+        ['Love Flight', home + 'love-flight/index.html'],
+        ['Flag + Plane', home + 'art/plane_flag.html'],
+        ['Cubist Plane', home + 'art/cubist_plane.html'],
         ['Notepad Frames', home + 'art/notepad_frames.html'],
       ];
       links.forEach(([name, href])=>{ const a = document.createElement('a'); a.href = href; a.textContent = name; nav.appendChild(a); });
@@ -227,7 +228,7 @@
         <span class="name">for_annusha.txt</span>
       </a>
 
-      <a class="card" href="annusha-love-flight/index.html" aria-label="Open the Love Flight scene">
+      <a class="card" href="love-flight/index.html" aria-label="Open the Love Flight scene">
         <pre>
 ┌─ Love Flight ───────────────────────────────────┐
 │ ASCII plane, rose trail, and a moonlit sky.     │
@@ -237,7 +238,7 @@
         <span class="name">soho whisper</span>
       </a>
 
-      <a class="card" href="art/annusha_plane_flag.html" aria-label="Open the Flag and Plane piece">
+      <a class="card" href="art/plane_flag.html" aria-label="Open the Flag and Plane piece">
         <pre>
 ┌─ Flag + Plane ──────────────────────────────────┐
 │ A banner in green and white with a tiny star,   │
@@ -247,7 +248,7 @@
         <span class="name">plane_flag</span>
       </a>
 
-      <a class="card" href="art/annusha_cubist_plane.html" aria-label="Open the Cubist Plane piece">
+      <a class="card" href="art/cubist_plane.html" aria-label="Open the Cubist Plane piece">
         <pre>
 ┌─ Cubist Plane ──────────────────────────────────┐
 │ A geometric study in angles and drift — minimal │
