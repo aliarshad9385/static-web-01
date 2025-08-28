@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>annusha — ascii</title>
+  <style>
+    :root {
+      --bg: #0f0b14; /* deep plum */
+      --fg: #efeaf3; /* soft ivory */
+      --muted: #b6aeca; /* lavender gray */
+      --heart: #ff7abf; /* soft rose */
+      --flag-green: #0a7d35;
+      --flag-white: #ffffff;
+      --pole: #847a99;
+      --ascii-max: 24px; /* max ASCII font size */
+    }
+    .home { position: fixed; top: 12px; left: 14px; z-index: 50; font-size: 12px; color: var(--muted); text-decoration: none; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); padding: 6px 8px; border-radius: 8px; backdrop-filter: blur(4px); }
+    .home:hover { background: rgba(255,255,255,.12); }
+    .skip{position:absolute; left:-9999px; top:0; background:#000; color:#fff; padding:6px 8px; z-index:9999}
+    .skip:focus{left:10px; top:10px; border-radius:4px}
+    a:focus-visible{ outline:2px solid #fff; outline-offset:2px }
+    :root { --frame-ms: 6500; --cut-ms: 380ms; }
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); overflow: hidden; }
+    body { display: grid; place-items: stretch; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .card {
+      width: 100vw;
+      height: 100vh;
+      background:
+        radial-gradient(600px 180px at 20% 10%, rgba(255,182,219,0.08), transparent 40%),
+        radial-gradient(700px 220px at 80% 80%, rgba(240,217,255,0.07), transparent 45%),
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      box-shadow: none;
+      position: relative;
+      overflow: hidden;
+    }
+    h1 { display:none; }
+    .row { display: none; }
+    .ps, .small { display: none; }
+
+    /* Scene */
+    .scene { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 0; background:
+      radial-gradient(1200px 420px at -10% 120%, rgba(255,255,255,0.04), transparent 40%),
+      radial-gradient(800px 320px at 120% -10%, rgba(255,255,255,0.04), transparent 40%);
+    }
+    .stars { position:absolute; inset:0; background:
+      radial-gradient(circle at 10% 20%, rgba(255,255,255,.8) 0 1px, transparent 2px),
+      radial-gradient(circle at 30% 80%, rgba(255,255,255,.8) 0 1px, transparent 2px),
+      radial-gradient(circle at 60% 30%, rgba(255,255,255,.8) 0 1px, transparent 2px),
+      radial-gradient(circle at 80% 60%, rgba(255,255,255,.8) 0 1px, transparent 2px),
+      radial-gradient(circle at 45% 55%, rgba(255,255,255,.8) 0 1px, transparent 2px);
+      opacity:.8; animation: twinkle 5s ease-in-out infinite; }
+    @keyframes twinkle { 0%,100%{opacity:.6} 50%{opacity:1} }
+
+    /* Motion path for plane and hearts */
+    .path-anchor { position:absolute; inset:0; }
+    .plane { position:absolute; font-family: inherit; color: var(--fg); white-space: pre; line-height: 1.05; filter: drop-shadow(0 1px 0 rgba(0,0,0,.6));
+      offset-path: path('M 20 190 C 250 120, 520 70, 820 160');
+      animation: fly 28s linear infinite; }
+    @keyframes fly {
+      0%   { offset-distance: 0%; transform: translate(-30%, -50%) rotate(6deg); }
+      40%  { transform: translate(-30%, -50%) rotate(-3deg); }
+      60%  { transform: translate(-30%, -50%) rotate(2deg); }
+      100% { offset-distance: 100%; transform: translate(-30%, -50%) rotate(6deg); }
+    }
+    .plane:hover { animation-duration: 8s; }
+
+    .plane .nose { color: var(--fg); }
+    .plane .heartline { color: var(--heart); animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:.6; transform: translateY(0);} 50%{opacity:1; transform: translateY(-1px);} }
+
+    .heart { position:absolute; color: var(--heart); font-weight: 700; filter: drop-shadow(0 1px 0 rgba(0,0,0,.5));
+      text-shadow: 0 0 8px rgba(255,122,191,0.4);
+      offset-path: path('M 20 190 C 250 120, 520 70, 820 160');
+      animation: trail 28s linear infinite; }
+    /* Staggered hearts trail behind plane */
+    .heart.h1 { animation-delay: -4s; }
+    .heart.h2 { animation-delay: -8s; }
+    .heart.h3 { animation-delay: -12s; }
+    .heart.h4 { animation-delay: -16s; }
+    .heart.h5 { animation-delay: -20s; }
+    .heart.h6 { animation-delay: -24s; }
+    @keyframes trail {
+      0%   { offset-distance: 0%; transform: translate(-40%, -50%) scale(0.7); opacity: .0; }
+      10%  { opacity:.9; }
+      70%  { opacity:.8; }
+      100% { offset-distance: 100%; transform: translate(-40%, -50%) scale(0.5); opacity: 0; }
+    }
+
+    /* Fallback if offset-path unsupported */
+    @supports not (offset-path: path('M0,0 L1,1')) {
+      .plane { left: -10%; top: 40%; animation: fly-x 28s linear infinite; }
+      .heart { display:none; }
+      @keyframes fly-x { from { transform: translateX(0); } to { transform: translateX(120vw); } }
+    }
+
+    /* Flag block (right) */
+    .flag { display: grid; grid-template-rows: repeat(8, 1em); align-items: center; margin-left: 10px; filter: drop-shadow(0 6px 16px rgba(255,182,219,0.12)); }
+    .pole { color: var(--pole); }
+    .flagline { display: inline-block; }
+    .flagbody { display: inline-block; width: 18ch; height: 1em; position: relative; overflow: hidden; }
+    .stripe-white { background: var(--flag-white); width: 3ch; height: 100%; display: inline-block; vertical-align: top; }
+    .stripe-green { background: var(--flag-green); width: calc(100% - 3ch); height: 100%; display: inline-block; vertical-align: top; position: relative; animation: wave 4.6s ease-in-out infinite; mask-image: linear-gradient(90deg, #000 15%, #000 100%); }
+    .crescent, .star { position: absolute; color: var(--flag-white); font-size: .9em; text-shadow: 0 0 4px rgba(255,255,255,.25); animation: shimmer 3.4s ease-in-out infinite; }
+    .crescent { left: 5ch; top: 0.05em; }
+    .star { left: 9ch; top: 0.1em; animation-delay: .8s; }
+    @keyframes wave {
+      0% { transform: translateX(0) skewY(0.5deg); filter: brightness(1); }
+      50% { transform: translateX(-1.0ch) skewY(-0.7deg); filter: brightness(1.06); }
+      100% { transform: translateX(0) skewY(0.5deg); filter: brightness(1); }
+    }
+    @keyframes shimmer { 0%,100%{opacity:.85} 50%{opacity:1} }
+    /* Slideshow — Samurai Jack blossom vibe */
+    .slideshow {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      border-radius: 0;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(700px 260px at 10% 90%, rgba(255, 122, 191, 0.06), transparent 45%),
+        radial-gradient(900px 300px at 110% 0%, rgba(255, 255, 255, 0.04), transparent 50%);
+      transition: filter 1.6s ease, background 1.2s ease;
+    }
+    .slideshow.invert { filter: invert(1) hue-rotate(180deg) saturate(1.1); }
+    .ascii {
+      white-space: pre;
+      text-align: center;
+      line-height: 1.15;
+      font-size: clamp(12px, 2.8vw, var(--ascii-max));
+      letter-spacing: 0.2px;
+      color: var(--fg);
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity var(--cut-ms) cubic-bezier(.2,.6,.2,1), transform var(--cut-ms) cubic-bezier(.2,.6,.2,1);
+      padding: 10px 12px;
+      text-shadow: 0 1px 0 rgba(0,0,0,.5);
+      will-change: opacity, transform;
+      position: absolute; inset: 0; display: grid; place-items: center;
+    }
+    .ascii.show { opacity: 1; transform: translateY(0); }
+    .caption { position: absolute; bottom: 18px; left: 20px; font-size: 12px; color: var(--muted); opacity: .85; user-select: none; z-index: 1; }
+    /* Blossom petals */
+    .petals { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+    .petal { position:absolute; top:-10px; color: var(--heart); opacity: .85; font-size: 14px; filter: drop-shadow(0 2px 0 rgba(0,0,0,.35)); animation: fall linear infinite; }
+    @keyframes fall {
+      0%   { transform: translateY(-10px) translateX(0) rotate(0deg); opacity:.0; }
+      10%  { opacity:.9; }
+      50%  { transform: translateY(50vh) translateX(20px) rotate(120deg); }
+      100% { transform: translateY(110%) translateX(-15px) rotate(260deg); opacity:.0; }
+    }
+    /* Whisper orbs for the epilogue */
+    .orbs { position:absolute; inset:0; pointer-events:none; opacity:0; transition: opacity 800ms ease; }
+    .slideshow.whisper .orbs { opacity:.9; }
+    .orb { position:absolute; border-radius:50%; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.85), rgba(255,122,191,.18) 60%, transparent 70%);
+      box-shadow: 0 0 24px rgba(255,122,191,.18); animation: float 8s ease-in-out infinite; filter: blur(.2px); }
+    @keyframes float { 0%,100%{ transform: translateY(-6px)} 50%{ transform: translateY(6px)} }
+
+    /* Ember finale (fire vibe) */
+    .embers { position:absolute; inset:0; pointer-events:none; opacity:0; transition: opacity 600ms ease; }
+    .slideshow.ember .embers { opacity:.85; }
+    .spark { position:absolute; width:2px; height:2px; border-radius:50%; background: rgba(255,150,80,.95);
+      box-shadow: 0 0 6px rgba(255,140,80,.9), 0 0 12px rgba(255,70,120,.5);
+      animation: rise 4.5s linear infinite; }
+    @keyframes rise { 0%{ transform: translateY(20px) translateX(0) scale(.7); opacity:0 } 10%{ opacity:1 }
+      100%{ transform: translateY(-120%) translateX(-12px) scale(1.15); opacity:0 } }
+    .fancyfire { background: linear-gradient(90deg, #ff8a00, #ff3d81, #ff8a00); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: firegrad 6s linear infinite; text-shadow: 0 0 8px rgba(255,100,60,.35); }
+    @keyframes firegrad { 0%{ background-position: 0% 50% } 100%{ background-position: 200% 50% } }
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important }
+      .plane, .heart, .petal, .orb, .spark { animation: none !important }
+    }
+</style>
+  <meta name="description" content="a soft soho whisper — a gentle flight of hearts" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#ff7abf" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a7d35'/%3E%3Crect width='12' height='64' fill='white'/%3E%3Cpath d='M42 26a10 10 0 1 0 0 12 8.5 8.5 0 1 1 0-12z' fill='white'/%3E%3Cpolygon points='44,32 49,34 46,29 46,35 49,30' fill='white'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <a class="skip" href="#slideshow">Skip to content</a>
+  <a class="home" href="../" aria-label="Back to home">⟵ Home</a>
+  <div class="card" role="main" aria-label="Love Flight scene: ASCII plane, hearts, and slideshow for Annusha.">
+    <h1>annusha — ascii</h1>
+    <div class="slideshow" id="slideshow" role="img" aria-label="Full‑screen ASCII slideshow for Annusha.">
+      <pre id="asciiA" class="ascii" aria-live="polite"></pre>
+      <pre id="asciiB" class="ascii" aria-live="polite"></pre>
+      <div class="caption" id="caption"></div>
+    </div>
+    <div class="ps">a gentle flight of hearts, for her <span style="color:var(--heart)">&lt;3</span></div>
+    <div class="small">[ a + a ]</div>
+  </div>
+</body>
+<script>
+  (function(){
+    // Config — expert-tuned pacing, can be tweaked quickly
+    let FRAME_MS = 6500;      // time each frame is visible (cinematic)
+    let CUT_MS = 380;         // crossfade duration (smoother)
+    let FAST_CUT_MS = 280;    // used when user advances manually
+
+    // Frame model — predictable, explicit, zero string sniffing
+    /** @type {{html?:boolean, content:string, caption:string, invert?:boolean, whisper?:boolean, ember?:boolean}[]} */
+    const FRAMES = [
+      {
+        caption: 'chapter i — dusk',
+        content:
+`                      _
+                    .:_:.
+                 .-"  ◯  "-.
+                /   .-^- .  \
+               |   /  |  \   |
+               |   \\\u005f|__/   |     goodnight
+                \\   .---.   /
+                 '-._\\_/_.-'
+                     /\\\\
+           __________/  \\\\__________
+          /_________________________\\
+          
+          — a quiet cut through dusk —`
+      },
+      {
+        caption: 'chapter ii — petal wind',
+        content:
+`            .   .   .   .   .   .   .
+           / \\ / \\ / \\ / \\ / \\ / \\ / \\   
+          |   X   X   X   X   X   X   |   
+           \\_/ \\_/ \\_/ \\_/ \\_/ \\_/ \\_/   
+
+                 annusha  goodnight
+
+         the wind carries petals and promises`
+      },
+      {
+        caption: 'chapter iii — blossom reveal', invert: true,
+        content:
+`        A   N   N   U   S   H   A
+        
+        ✷    ✷    ✷    ✷    ✷    ✷
+        
+   bloom.     blossom.      become.      (for you)`
+      },
+      {
+        caption: 'epilogue — whisper orbs', whisper: true,
+        content:
+`           five reasons, plain as moonlight:
+
+            1) your name slows my sky
+            2) your smile bends orbits
+            3) your laugh resets gravity
+            4) your kindness softens time
+            5) goodnight, annusha — always, gently, yes`
+      },
+      {
+        caption: 'finale — ember vow', ember: true, html: true,
+        content:
+`        ꧁༺  ⟡  ༻꧂
+
+         <span class="fancyfire">𝒅𝑒𝒂𝒅𝒂𝓼𝓼 𝓶𝔂 𝒄𝓻𝓾𝓼𝒉</span>
+
+        ꧁༺  ⟡  ༻꧂`
+      }
+    ];
+
+    const slideEl = document.getElementById('slideshow');
+    const captionEl = document.getElementById('caption');
+    const frameA = document.getElementById('asciiA');
+    const frameB = document.getElementById('asciiB');
+    const canvas = document.getElementById('bokeh');
+    const gear = document.getElementById('gear');
+    const panel = document.getElementById('panel');
+    const badge = document.getElementById('badge');
+    const titleEl = document.querySelector('h1');
+    const controlEls = {
+      frameMs: document.getElementById('frameMs'),
+      cutMs: document.getElementById('cutMs'),
+      maxPx: document.getElementById('maxPx'),
+      hideTitle: document.getElementById('hideTitle'),
+      density: document.getElementById('density'),
+    };
+
+    // Build ambient layers once
+    const petalHost = document.getElementById('petals');
+    const orbsHost = document.getElementById('orbs');
+    const embersHost = document.getElementById('embers');
+
+    const mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const reduce = mqReduce.matches;
+
+    // Ambient builders with density control
+    function clearChildren(node){ while(node.firstChild) node.removeChild(node.firstChild); }
+    function makePetals(density){
+      clearChildren(petalHost);
+      const base = density==='high'? 34 : density==='low'? 16 : 28;
+      const PETALS = reduce ? 0 : base;
+      const glyphs = ['✿','❀','✾','✧','♥','♡'];
+      for (let i=0;i<PETALS;i++){
+        const s = document.createElement('span');
+        s.className = 'petal';
+        s.textContent = glyphs[i % glyphs.length];
+        s.style.left = Math.random()*100 + 'vw';
+        const dur = 6 + Math.random()*7; // 6–13s
+        const delay = Math.random()*-dur;
+        s.style.animationDuration = dur + 's';
+        s.style.animationDelay = delay + 's';
+        petalHost.appendChild(s);
+      }
+    }
+    function makeOrbs(density){
+      clearChildren(orbsHost);
+      const base = density==='high'? 18 : density==='low'? 8 : 14;
+      const ORBS = reduce ? 0 : base;
+      for (let i=0;i<ORBS;i++){
+        const o = document.createElement('div');
+        o.className = 'orb';
+        const size = 12 + Math.random()*24;
+        o.style.width = size + 'px';
+        o.style.height = size + 'px';
+        o.style.left = Math.random()*100 + 'vw';
+        o.style.top = (10 + Math.random()*70) + 'px';
+        o.style.animationDuration = (6 + Math.random()*6) + 's';
+        o.style.animationDelay = (Math.random()*-6) + 's';
+        orbsHost.appendChild(o);
+      }
+    }
+    function makeEmbers(density){
+      clearChildren(embersHost);
+      const base = density==='high'? 64 : density==='low'? 32 : 48;
+      const EMBERS = reduce ? 0 : base;
+      for (let i=0;i<EMBERS;i++){
+        const e = document.createElement('div');
+        e.className = 'spark';
+        e.style.left = (10 + Math.random()*80) + 'vw';
+        e.style.bottom = (Math.random()*12) + 'px';
+        e.style.animationDuration = (3.5 + Math.random()*3) + 's';
+        e.style.animationDelay = (Math.random()*-6) + 's';
+        embersHost.appendChild(e);
+      }
+    }
+
+    // Crossfade engine (two layers)
+    let i = 0;
+    let useA = true;
+    let timer = null;
+    let paused = false;
+
+    function applyScene(scene){
+      slideEl.classList.toggle('invert', !!scene.invert);
+      slideEl.classList.toggle('whisper', !!scene.whisper);
+      slideEl.classList.toggle('ember', !!scene.ember);
+      captionEl.textContent = scene.caption || '';
+    }
+
+    function setContent(el, scene){
+      if (scene.html) el.innerHTML = scene.content; else el.textContent = scene.content;
+    }
+
+    function nextFrame(ms=CUT_MS){
+      const idx = i % FRAMES.length;
+      if (paused) return; // do not advance when paused
+      const current = FRAMES[idx];
+      const targetEl = useA ? frameA : frameB;
+      const otherEl = useA ? frameB : frameA;
+
+      // prepare target
+      setContent(targetEl, current);
+      targetEl.classList.add('show');
+      otherEl.classList.remove('show');
+      applyScene(current);
+
+      useA = !useA;
+      clearTimeout(timer);
+      const hold = (idx === FRAMES.length - 1) ? 1500 : 0; // gentle finale hold
+      timer = setTimeout(()=> nextFrame(CUT_MS), FRAME_MS + hold);
+      i++;
+    }
+
+    // Start and allow click/tap/keyboard to advance with fast cut
+    // First render of ambience and frame
+    let density = 'medium';
+    makePetals(density); makeOrbs(density); makeEmbers(density);
+    nextFrame(CUT_MS);
+
+    // Interactions
+    slideEl.addEventListener('click', ()=>{ if (paused) return; clearTimeout(timer); nextFrame(FAST_CUT_MS); });
+    window.addEventListener('keydown', (e)=>{
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); clearTimeout(timer); nextFrame(FAST_CUT_MS); }
+      if (e.key.toLowerCase() === 'p') { paused = !paused; badge.textContent = paused ? 'paused' : ''; if (!paused) { clearTimeout(timer); nextFrame(CUT_MS); } }
+    });
+
+    // Reduced motion hard stop
+    if (reduce) {
+      document.documentElement.style.setProperty('--cut-ms', '0ms');
+    }
+
+    // Bokeh hearts canvas (GPU‑friendly 2D)
+    (function(){
+      const ctx = canvas.getContext('2d');
+      let dpr = window.devicePixelRatio || 1;
+      function rs(){
+        const {clientWidth:w, clientHeight:h} = canvas;
+        canvas.width = Math.max(1, Math.floor(w*dpr));
+        canvas.height = Math.max(1, Math.floor(h*dpr));
+      }
+      rs();
+      window.addEventListener('resize', rs);
+      const N = 22;
+      const hearts = new Array(N).fill(0).map(()=>({
+        x: Math.random(), y: Math.random(), r: .02 + Math.random()*.06, vx: (-.02 + Math.random()*.04), vy: (.005 + Math.random()*.015), p: Math.random()*Math.PI*2
+      }));
+      function drawHeart(x,y,s,alpha){
+        const g = ctx.createRadialGradient(x,y,0,x,y,s*1.2);
+        g.addColorStop(0, `rgba(255,122,191,${alpha})`);
+        g.addColorStop(1, `rgba(255,122,191,0)`);
+        ctx.fillStyle = g; ctx.beginPath();
+        // simple heart blob
+        ctx.moveTo(x, y);
+        ctx.bezierCurveTo(x-s, y-s, x-2*s, y+s*0.2, x, y+1.8*s);
+        ctx.bezierCurveTo(x+2*s, y+s*0.2, x+s, y-s, x, y);
+        ctx.fill();
+      }
+      function tick(){
+        if (!ctx) return;
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+        ctx.globalCompositeOperation = 'lighter';
+        for (const h of hearts){
+          h.p += 0.01; h.x += h.vx*0.001; h.y -= h.vy*0.001;
+          if (h.y < -0.1) { h.y = 1.1; h.x = Math.random(); }
+          if (h.x < -0.1) h.x = 1.1; if (h.x > 1.1) h.x = -0.1;
+          const x = h.x*canvas.width, y = h.y*canvas.height; const s = h.r*canvas.height*0.6; const a = 0.12 + 0.08*Math.sin(h.p);
+          drawHeart(x,y,s,a);
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    })();
+
+    // Settings panel & URL params
+    function readParams(){
+      const q = new URLSearchParams(location.search);
+      const o = Object.create(null);
+      if (q.has('frameMs')) o.frameMs = +q.get('frameMs');
+      if (q.has('cutMs')) o.cutMs = +q.get('cutMs');
+      if (q.has('maxPx')) o.maxPx = +q.get('maxPx');
+      if (q.has('hideTitle')) o.hideTitle = q.get('hideTitle')==='1' || q.get('hideTitle')==='true';
+      if (q.has('density')) o.density = q.get('density');
+      if (q.has('title')) o.title = q.get('title');
+      return o;
+    }
+    const params = readParams();
+    if (params.frameMs) FRAME_MS = params.frameMs;
+    if (params.cutMs) { CUT_MS = params.cutMs; document.documentElement.style.setProperty('--cut-ms', CUT_MS+'ms'); }
+    if (params.maxPx) document.documentElement.style.setProperty('--ascii-max', params.maxPx+'px');
+    if (params.hideTitle) titleEl.style.display = 'none';
+    if (params.title) titleEl.textContent = params.title;
+    if (params.density) { density = ['low','medium','high'].includes(params.density)? params.density: density; makePetals(density); makeOrbs(density); makeEmbers(density); }
+
+    // Panel wiring
+    function syncPanel(){
+      controlEls.frameMs.value = FRAME_MS;
+      controlEls.cutMs.value = CUT_MS;
+      const mx = getComputedStyle(document.documentElement).getPropertyValue('--ascii-max').trim();
+      controlEls.maxPx.value = parseInt(mx || '24', 10);
+      controlEls.hideTitle.checked = (titleEl.style.display==='none');
+      controlEls.density.value = density;
+    }
+    syncPanel();
+    gear.addEventListener('click', ()=> panel.classList.toggle('show'));
+    controlEls.frameMs.addEventListener('input', e=>{ FRAME_MS = +e.target.value; badge.textContent = `frame ${FRAME_MS}ms`; setTimeout(()=> badge.textContent='', 1200); });
+    controlEls.cutMs.addEventListener('input', e=>{ CUT_MS = +e.target.value; document.documentElement.style.setProperty('--cut-ms', CUT_MS+'ms'); badge.textContent = `cut ${CUT_MS}ms`; setTimeout(()=> badge.textContent='', 1200); });
+    controlEls.maxPx.addEventListener('input', e=>{ document.documentElement.style.setProperty('--ascii-max', e.target.value+'px'); });
+    controlEls.hideTitle.addEventListener('change', e=>{ titleEl.style.display = e.target.checked? 'none':'block'; });
+    controlEls.density.addEventListener('change', e=>{ density = e.target.value; makePetals(density); makeOrbs(density); makeEmbers(density); });
+
+    // Service worker (offline)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', ()=> {
+        navigator.serviceWorker.register('./sw.js').catch(()=>{});
+        navigator.serviceWorker.register('../site-sw.js').catch(()=>{});
+      });
+    }
+    // Love Index overlay
+    (function(){
+      const style = document.createElement('style');
+      style.textContent = `.lovebtn{position:fixed; right:14px; bottom:14px; width:42px; height:42px; border-radius:50%; display:grid; place-items:center; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16); color:var(--muted); cursor:pointer; z-index:9999} .lovebtn:focus-visible{outline:2px solid #fff; outline-offset:2px} .loveidx{position:fixed; inset:0; display:none; z-index:10000} .loveidx.show{display:block} .loveidx .back{position:absolute; inset:0; background:rgba(0,0,0,.5)} .loveidx .panel{position:relative; margin:10vh auto; max-width:620px; background:rgba(20,16,26,.92); border:1px solid rgba(255,255,255,.16); border-radius:10px; padding:14px; color:var(--fg); box-shadow:0 20px 40px rgba(0,0,0,.4)}`;
+      document.head.appendChild(style);
+      const wrap = document.createElement('div'); wrap.className='loveidx';
+      const back = document.createElement('div'); back.className='back';
+      const panel = document.createElement('div'); panel.className='panel'; panel.role='dialog'; panel.ariaModal='true';
+      const h = document.createElement('h2'); h.textContent = 'Love Index'; panel.appendChild(h);
+      const nav = document.createElement('nav'); nav.setAttribute('aria-label','Love Index');
+      const home = '../';
+      [['Home', home], ['Notepad Letter', home+'notepad.html'], ['Love Flight', home+'annusha-love-flight/index.html'], ['Flag + Plane', home+'art/annusha_plane_flag.html'], ['Cubist Plane', home+'art/annusha_cubist_plane.html'], ['Notepad Frames', home+'art/notepad_frames.html']]
+        .forEach(([n,u])=>{ const a=document.createElement('a'); a.href=u; a.textContent=n; nav.appendChild(a); });
+      panel.appendChild(nav); wrap.appendChild(back); wrap.appendChild(panel); document.body.appendChild(wrap);
+      function open(){ wrap.classList.add('show'); (panel.querySelector('a')||panel).focus(); }
+      function close(){ wrap.classList.remove('show'); btn.focus(); }
+      back.addEventListener('click', close);
+      window.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && wrap.classList.contains('show')) close(); if(e.key==='?' || (e.shiftKey && e.key==='/')) open(); });
+      const btn = document.createElement('button'); btn.className='lovebtn'; btn.type='button'; btn.setAttribute('aria-label','Open Love Index'); btn.textContent='❤'; btn.addEventListener('click', open); document.body.appendChild(btn);
+    })();
+    // Soft page transitions (flow)
+    (function(){
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const s2 = document.createElement('style'); s2.textContent = `body.fade-init{opacity:0} body.fade-in{opacity:1; transition:opacity .3s ease}`; document.head.appendChild(s2);
+      document.body.classList.add('fade-init'); requestAnimationFrame(()=>{ if(!reduce){ document.body.classList.add('fade-in'); }});
+      document.addEventListener('click',(e)=>{
+        const a = e.target.closest('a[href]'); if(!a) return;
+        const url = new URL(a.href, location.href);
+        if (url.origin === location.origin) { if(!reduce){ e.preventDefault(); document.body.classList.remove('fade-in'); setTimeout(()=>{ location.href = a.href; }, 180); } }
+      }, true);
+    })();
+  })();
+</script>
+<!-- Self‑contained; perfect for GitHub Pages/Netlify. -->
+</html>
