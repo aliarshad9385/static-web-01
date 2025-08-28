@@ -10,7 +10,7 @@ RED='\033[91m'
 PINK='\033[95m'
 RESET='\033[0m'
 
-printf "%b\n" "${WHITE}to: annusha — the baddest b possible${RESET}"
+printf "%b\n" "${WHITE}to: you — with love${RESET}"
 printf "\n"
 printf "%s\n" "      ~   .     ~     .      ~     .      ~    .   ~   ."
 printf "%s\n" "        .    ~     .    ~      .     ~       .     ~   ."
@@ -42,4 +42,4 @@ printf "%b\n" "${pad}${GRAY}│__${WHITE}|${GRAY}_|____________________${RESET}"
 printf "\n"
 
 printf "%b\n" "${WHITE}p.s.${RESET} sending you ${WHITE}love${RESET}, ${WHITE}care${RESET}, and a flirty tailwind — keep that smile for me ${RED}<3${RESET}"
-printf "%b\n" "${WHITE}[ a + annusha ]${RESET}"
+printf "%b\n" "${WHITE}[ a + you ]${RESET}"

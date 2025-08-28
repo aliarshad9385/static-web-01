@@ -180,7 +180,7 @@
   </div>
 
 <script>
-// ====== Frame-by-frame Notepad art for Annusha (smooth crossfades) ======
+// ====== Frame-by-frame Notepad art (smooth crossfades) ======
 const editor = document.getElementById('editor');
 const loc = document.getElementById('loc');
 const cap = document.getElementById('caption');
@@ -457,7 +457,7 @@ if ('serviceWorker' in navigator) { window.addEventListener('load', ()=> navigat
   const h = document.createElement('h2'); h.textContent = 'Love Index'; panel.appendChild(h);
   const nav = document.createElement('nav'); nav.setAttribute('aria-label','Love Index');
   const home = '../';
-  [['Home', home], ['Notepad Letter', home+'notepad.html'], ['Love Flight', home+'annusha-love-flight/index.html'], ['Flag + Plane', home+'art/annusha_plane_flag.html'], ['Cubist Plane', home+'art/annusha_cubist_plane.html'], ['Notepad Frames', home+'art/notepad_frames.html']]
+  [['Home', home], ['Notepad Letter', home+'notepad.html'], ['Love Flight', home+'love-flight/index.html'], ['Flag + Plane', home+'art/plane_flag.html'], ['Cubist Plane', home+'art/cubist_plane.html'], ['Notepad Frames', home+'art/notepad_frames.html']]
     .forEach(([n,u])=>{ const a=document.createElement('a'); a.href=u; a.textContent=n; nav.appendChild(a); });
   panel.appendChild(nav); wrap.appendChild(back); wrap.appendChild(panel); document.body.appendChild(wrap);
   function open(){ wrap.classList.add('show'); (panel.querySelector('a')||panel).focus(); }

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>To: Annusha — the baddest b possible</title>
+  <title>To: You — with love</title>
   <style>
     :root {
       --bg: #0d0f12;
@@ -72,8 +72,8 @@
       *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important }
     }
   </style>
-  <meta name="description" content="Cute ASCII plane to a waving Pakistani flag for Annusha — with hearts and love." />
-  <meta property="og:title" content="To: Annusha — the baddest b possible" />
+  <meta name="description" content="Cute ASCII plane to a waving flag — with hearts and love." />
+  <meta property="og:title" content="To: You — with love" />
   <meta property="og:description" content="Cute, wholesome, flirty ASCII with hearts and a waving Pakistani flag." />
   <meta name="theme-color" content="#0a7d35" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a7d35'/%3E%3Crect width='12' height='64' fill='white'/%3E%3Cpath d='M42 26a10 10 0 1 0 0 12 8.5 8.5 0 1 1 0-12z' fill='white'/%3E%3Cpolygon points='44,32 49,34 46,29 46,35 49,30' fill='white'/%3E%3C/svg%3E" />
@@ -82,7 +82,7 @@
   <a class="skip" href="#content">Skip to content</a>
   <a class="home" href="../" aria-label="Back to home">⟵ Home</a>
   <div class="card" role="main" aria-labelledby="title">
-    <h1 id="title">to: annusha — the baddest b possible</h1>
+    <h1 id="title">to: you — with love</h1>
     <div class="row" id="content">
       <div class="art" aria-hidden="true">
         <span>     ✦    ~   .     ~     .     ✦    ~     .      ~   .   ~   .</span>
@@ -122,7 +122,7 @@
       </div>
     </div>
     <div class="ps">p.s. sending you love, care, and a flirty tailwind — keep that smile for me <span style="color:var(--heart)">&lt;3</span></div>
-    <div class="small">[ a + annusha ]</div>
+    <div class="small">[ a + you ]</div>
   </div>
   <script>
     // Register root service worker
@@ -138,7 +138,7 @@
       const h = document.createElement('h2'); h.textContent = 'Love Index'; panel.appendChild(h);
       const nav = document.createElement('nav'); nav.setAttribute('aria-label','Love Index');
       const home = '../';
-      [['Home', home], ['Notepad Letter', home+'notepad.html'], ['Love Flight', home+'annusha-love-flight/index.html'], ['Flag + Plane', home+'art/annusha_plane_flag.html'], ['Cubist Plane', home+'art/annusha_cubist_plane.html'], ['Notepad Frames', home+'art/notepad_frames.html']]
+      [['Home', home], ['Notepad Letter', home+'notepad.html'], ['Love Flight', home+'love-flight/index.html'], ['Flag + Plane', home+'art/plane_flag.html'], ['Cubist Plane', home+'art/cubist_plane.html'], ['Notepad Frames', home+'art/notepad_frames.html']]
         .forEach(([n,u])=>{ const a=document.createElement('a'); a.href=u; a.textContent=n; nav.appendChild(a); });
       panel.appendChild(nav); wrap.appendChild(back); wrap.appendChild(panel); document.body.appendChild(wrap);
       function open(){ wrap.classList.add('show'); (panel.querySelector('a')||panel).focus(); }
@@ -157,6 +157,24 @@
         const url = new URL(a.href, location.href);
         if (url.origin === location.origin) { if(!reduce){ e.preventDefault(); document.body.classList.remove('fade-in'); setTimeout(()=>{ location.href = a.href; }, 180); } }
       }, true);
+    })();
+  </script>
+  <script>
+    // Cross-page slideshow: schedule fade + navigate to next scene
+    (function(){
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const qs = new URLSearchParams(location.search);
+      const auto = qs.get('slideshow') !== '0' && !reduce;
+      const slides = ['../', '../notepad.html', '../love-flight/index.html', '../art/plane_flag.html', '../art/cubist_plane.html'];
+      const dwell = 10000;
+      if (auto){
+        setTimeout(()=>{ document.body.classList.remove('fade-in'); setTimeout(()=>{
+          const path = location.pathname.endsWith('/') ? './' : location.pathname.split('/').slice(-1)[0];
+          const curIdx = slides.findIndex(s => s.endsWith(path));
+          const next = slides[(curIdx + 1) % slides.length];
+          location.href = next + '?slideshow=1';
+        }, 220); }, dwell);
+      }
     })();
   </script>
 </body>

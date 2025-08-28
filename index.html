@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>For Annusha — ASCII Love</title>
-  <meta name="description" content="A small website of ASCII love for Annusha — heart art, flights, notes, and tender bits." />
+  <title>For You — ASCII Love</title>
+  <meta name="description" content="A small website of ASCII love — heart art, flights, notes, and tender bits." />
   <style>
     :root{
       --bg:#0e0a12;         /* deep plum night */
@@ -112,7 +112,7 @@
       const top = '╔' + '═'.repeat(w+2) + '╗';
       const bot = '╚' + '═'.repeat(w+2) + '╝';
       const body = lines.map(l=>'║ '+pad(l)+' ║').join('\n');
-      const tag = center('— For ANNUSHA —', w+2);
+      const tag = center('— For You —', w+2);
       const note = center('Every moment with you glows a little brighter.', w+2);
       return [top, body, '║ '+tag+' ║', '║ '+note+' ║', bot].join('\n');
     }
@@ -198,13 +198,45 @@
         const url = new URL(a.href, location.href);
         if (url.origin === location.origin) { if(!reduce){ e.preventDefault(); document.body.classList.remove('fade-in'); setTimeout(()=>{ location.href = a.href; }, 180); } }
       }, true);
+
+      // Lightweight slideshow across scenes
+      const slides = ['./', './notepad.html', './love-flight/index.html', './art/plane_flag.html', './art/cubist_plane.html'];
+      const durations = { 'index.html': 8000, 'notepad.html': 16000, 'love-flight/index.html': 16000, 'art/plane_flag.html': 10000, 'art/cubist_plane.html': 10000, './': 8000 };
+      const qs = new URLSearchParams(location.search);
+      const auto = qs.get('slideshow') !== '0' && !reduce;
+      function scheduleNext(){
+        if(!auto) return;
+        const path = location.pathname.endsWith('/') ? './' : location.pathname.split('/').slice(-1)[0];
+        const curIdx = slides.findIndex(s => s.endsWith(path));
+        const next = slides[(curIdx + 1) % slides.length];
+        const key = path || './';
+        const ms = durations[key] || 10000;
+        setTimeout(()=>{ document.body.classList.remove('fade-in'); setTimeout(()=>{ location.href = next + '?slideshow=1'; }, 220); }, ms);
+      }
+      window.addEventListener('load', scheduleNext);
+      // Pause on any user interaction
+      ['keydown','mousemove','mousedown','touchstart','scroll'].forEach(ev=> window.addEventListener(ev, ()=>{ history.replaceState(null,'',location.pathname); }, { once:true }));
+
+      // Play/Pause button
+      const play = document.createElement('button');
+      play.className = 'lovebtn'; play.setAttribute('aria-label','Toggle slideshow');
+      play.textContent = auto ? '❚❚' : '▶';
+      play.style.left = 'calc(14px + env(safe-area-inset-left, 0px))';
+      play.style.right = 'auto';
+      play.addEventListener('click', ()=>{
+        const p = new URL(location.href);
+        const on = p.searchParams.get('slideshow') !== '0';
+        if(on){ p.searchParams.set('slideshow','0'); } else { p.searchParams.set('slideshow','1'); }
+        location.href = p.toString();
+      });
+      document.body.appendChild(play);
     })();
   </script>
   </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
   <header>
-    <div class="brand"><b>For Annusha</b> · ASCII Love</div>
+    <div class="brand"><b>For You</b> · ASCII Love</div>
     <div class="hint">A tiny museum of text and light</div>
   </header>
 
@@ -212,7 +244,7 @@
     <section class="hero">
       <div class="title">A Love In Monospace</div>
       <div class="subtitle">Shaped in characters. Lit by feeling.</div>
-      <pre id="heart" role="img" aria-label="A framed ASCII heart dedicated to Annusha"></pre>
+      <pre id="heart" role="img" aria-label="A framed ASCII heart dedicated to you"></pre>
       <div class="scan" aria-hidden="true"></div>
       <div class="floaters" id="floaters" aria-hidden="true"></div>
     </section>
@@ -225,7 +257,7 @@
 │ Save it as text; toggle Neon for floaty hearts.│
 └────────────────────────────────────────────────┘
         </pre>
-        <span class="name">for_annusha.txt</span>
+        <span class="name">for_you.txt</span>
       </a>
 
       <a class="card" href="love-flight/index.html" aria-label="Open the Love Flight scene">

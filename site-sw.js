@@ -1,14 +1,14 @@
-// Simple offline cache for the Annusha ASCII site
-const CACHE = 'annusha-ascii-v1';
+// Simple offline cache for the ASCII site
+const CACHE = 'ascii-site-v2';
 // Use relative paths so this works under subpaths (e.g., GitHub Pages /repo/)
 const ASSETS = [
   './',
   'index.html',
   'notepad.html',
-  'art/annusha_plane_flag.html',
-  'art/annusha_cubist_plane.html',
+  'art/plane_flag.html',
+  'art/cubist_plane.html',
   'art/notepad_frames.html',
-  'annusha-love-flight/index.html'
+  'love-flight/index.html'
 ];
 
 self.addEventListener('install', (e)=>{

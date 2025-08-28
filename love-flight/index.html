@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>annusha — ascii</title>
+  <title>love flight — ascii</title>
   <style>
     :root {
       --bg: #0f0b14; /* deep plum */
@@ -189,9 +189,9 @@
 <body>
   <a class="skip" href="#slideshow">Skip to content</a>
   <a class="home" href="../" aria-label="Back to home">⟵ Home</a>
-  <div class="card" role="main" aria-label="Love Flight scene: ASCII plane, hearts, and slideshow for Annusha.">
-    <h1>annusha — ascii</h1>
-    <div class="slideshow" id="slideshow" role="img" aria-label="Full‑screen ASCII slideshow for Annusha.">
+  <div class="card" role="main" aria-label="Love Flight scene: ASCII plane, hearts, and slideshow.">
+    <h1>love flight — ascii</h1>
+    <div class="slideshow" id="slideshow" role="img" aria-label="Full‑screen ASCII slideshow.">
       <pre id="asciiA" class="ascii" aria-live="polite"></pre>
       <pre id="asciiB" class="ascii" aria-live="polite"></pre>
       <div class="caption" id="caption"></div>
@@ -235,7 +235,7 @@
           |   X   X   X   X   X   X   |   
            \\_/ \\_/ \\_/ \\_/ \\_/ \\_/ \\_/   
 
-                 annusha  goodnight
+                 goodnight
 
          the wind carries petals and promises`
       },
@@ -257,7 +257,7 @@
             2) your smile bends orbits
             3) your laugh resets gravity
             4) your kindness softens time
-            5) goodnight, annusha — always, gently, yes`
+            5) goodnight — always, gently, yes`
       },
       {
         caption: 'finale — ember vow', ember: true, html: true,
@@ -498,7 +498,7 @@
       const h = document.createElement('h2'); h.textContent = 'Love Index'; panel.appendChild(h);
       const nav = document.createElement('nav'); nav.setAttribute('aria-label','Love Index');
       const home = '../';
-      [['Home', home], ['Notepad Letter', home+'notepad.html'], ['Love Flight', home+'annusha-love-flight/index.html'], ['Flag + Plane', home+'art/annusha_plane_flag.html'], ['Cubist Plane', home+'art/annusha_cubist_plane.html'], ['Notepad Frames', home+'art/notepad_frames.html']]
+      [['Home', home], ['Notepad Letter', home+'notepad.html'], ['Love Flight', home+'love-flight/index.html'], ['Flag + Plane', home+'art/plane_flag.html'], ['Cubist Plane', home+'art/cubist_plane.html'], ['Notepad Frames', home+'art/notepad_frames.html']]
         .forEach(([n,u])=>{ const a=document.createElement('a'); a.href=u; a.textContent=n; nav.appendChild(a); });
       panel.appendChild(nav); wrap.appendChild(back); wrap.appendChild(panel); document.body.appendChild(wrap);
       function open(){ wrap.classList.add('show'); (panel.querySelector('a')||panel).focus(); }
@@ -519,6 +519,26 @@
       }, true);
     })();
   })();
+</script>
+<script>
+// Cross-page slideshow: schedule fade + navigate to next scene
+(function(){
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const qs = new URLSearchParams(location.search);
+  const auto = qs.get('slideshow') !== '0' && !reduce;
+  const slides = ['./', './notepad.html', './love-flight/index.html', './art/plane_flag.html', './art/cubist_plane.html'];
+  const dwell = 16000; // allow some time for internal frames
+  const s2 = document.createElement('style'); s2.textContent = `body.fade-init{opacity:0} body.fade-in{opacity:1; transition:opacity .3s ease}`; document.head.appendChild(s2);
+  document.body.classList.add('fade-init'); requestAnimationFrame(()=>{ if(!reduce){ document.body.classList.add('fade-in'); }});
+  if (auto){
+    setTimeout(()=>{ document.body.classList.remove('fade-in'); setTimeout(()=>{
+      const path = location.pathname.endsWith('/') ? './' : location.pathname.split('/').slice(-1)[0];
+      const curIdx = slides.findIndex(s => s.endsWith(path));
+      const next = slides[(curIdx + 1) % slides.length];
+      location.href = next + '?slideshow=1';
+    }, 220); }, dwell);
+  }
+})();
 </script>
 <!-- Self‑contained; perfect for GitHub Pages/Netlify. -->
 </html>
