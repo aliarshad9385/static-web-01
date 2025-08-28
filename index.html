@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>For You — ASCII Love</title>
-  <meta name="description" content="A small website of ASCII love — heart art, flights, notes, and tender bits." />
+  <title>For Annusha — ASCII Love</title>
+  <meta name="description" content="A small website of ASCII love for Annusha — heart art, flights, notes, and tender bits." />
   <style>
     :root{
       --bg:#0e0a12;         /* deep plum night */
@@ -44,14 +44,17 @@
 
     pre#heart{
       margin:0; white-space:pre; text-align:center; line-height:1.05;
-      font-size: clamp(10px, 2.4vw, 22px);
+      font-size: clamp(10px, min(2.6vw, 2.6vh), 22px);
       padding: 16px 8px; max-width: 96vw; overflow:auto;
       color: transparent;
       background: linear-gradient(90deg, #ffffff, #ffd1dc, #ff89b3, #ffe6f2, #ffffff);
       -webkit-background-clip:text; background-clip:text;
       text-shadow: 0 0 10px rgba(255,122,191,.25);
       filter: drop-shadow(0 1px 0 rgba(0,0,0,.5));
+      transform-origin: center;
+      animation: pulseHeart 2.2s ease-in-out infinite;
     }
+    @keyframes pulseHeart { 0%,100%{ transform: scale(1); text-shadow: 0 0 10px rgba(255,122,191,.25); } 50%{ transform: scale(1.03); text-shadow: 0 0 16px rgba(255,122,191,.35);} }
     .scan{position:absolute; inset:0; pointer-events:none; opacity:.06; mix-blend-mode:screen;
       background: repeating-linear-gradient(180deg, rgba(255,255,255,.8) 0 1px, transparent 2px 3px);
     }
@@ -112,7 +115,7 @@
       const top = '╔' + '═'.repeat(w+2) + '╗';
       const bot = '╚' + '═'.repeat(w+2) + '╝';
       const body = lines.map(l=>'║ '+pad(l)+' ║').join('\n');
-      const tag = center('— For You —', w+2);
+      const tag = center('— For ANNUSHA —', w+2);
       const note = center('Every moment with you glows a little brighter.', w+2);
       return [top, body, '║ '+tag+' ║', '║ '+note+' ║', bot].join('\n');
     }
@@ -236,7 +239,7 @@
 <body>
   <a class="skip" href="#main">Skip to content</a>
   <header>
-    <div class="brand"><b>For You</b> · ASCII Love</div>
+    <div class="brand"><b>For Annusha</b> · ASCII Love</div>
     <div class="hint">A tiny museum of text and light</div>
   </header>
 
@@ -244,7 +247,7 @@
     <section class="hero">
       <div class="title">A Love In Monospace</div>
       <div class="subtitle">Shaped in characters. Lit by feeling.</div>
-      <pre id="heart" role="img" aria-label="A framed ASCII heart dedicated to you"></pre>
+      <pre id="heart" role="img" aria-label="A framed ASCII heart dedicated to Annusha"></pre>
       <div class="scan" aria-hidden="true"></div>
       <div class="floaters" id="floaters" aria-hidden="true"></div>
     </section>
@@ -257,7 +260,7 @@
 │ Save it as text; toggle Neon for floaty hearts.│
 └────────────────────────────────────────────────┘
         </pre>
-        <span class="name">for_you.txt</span>
+        <span class="name">for_annusha.txt</span>
       </a>
 
       <a class="card" href="love-flight/index.html" aria-label="Open the Love Flight scene">

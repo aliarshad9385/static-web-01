@@ -14,7 +14,7 @@
       --flag-green: #0a7d35;
       --flag-white: #ffffff;
       --pole: #847a99;
-      --ascii-max: 24px; /* max ASCII font size */
+      --ascii-max: 22px; /* max ASCII font size */
     }
     .home { position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); left: calc(14px + env(safe-area-inset-left, 0px)); z-index: 50; font-size: 12px; color: var(--muted); text-decoration: none; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); padding: 6px 8px; border-radius: 8px; backdrop-filter: blur(4px); }
     .home:hover { background: rgba(255,255,255,.12); }
@@ -135,7 +135,7 @@
       white-space: pre;
       text-align: center;
       line-height: 1.15;
-      font-size: clamp(12px, 2.8vw, var(--ascii-max));
+      font-size: clamp(12px, min(3.2vw, 2.7vh), var(--ascii-max));
       letter-spacing: 0.2px;
       color: var(--fg);
       opacity: 0;
@@ -196,8 +196,8 @@
       <pre id="asciiB" class="ascii" aria-live="polite"></pre>
       <div class="caption" id="caption"></div>
     </div>
-    <div class="ps">a gentle flight of hearts, for her <span style="color:var(--heart)">&lt;3</span></div>
-    <div class="small">[ a + a ]</div>
+    <div class="ps">a gentle flight of hearts, for annusha <span style="color:var(--heart)">&lt;3</span></div>
+    <div class="small">[ a + annusha ]</div>
   </div>
 </body>
 <script>
