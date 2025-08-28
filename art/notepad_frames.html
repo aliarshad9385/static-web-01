@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>codex_sortie.txt - Notepad</title>
+<meta name="description" content="An extremely artsy, CODEX fighter-jet story told in frame-by-frame ASCII with smooth crossfades." />
+<style>
+  :root{
+    --blue:#000080; --blue2:#0016a8;
+    --face:#cfcfcf; --light:#ffffff; --shadow:#808080; --dark:#404040;
+    --text:#000; --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    --bg:#e5e5e5; --paper:#fff;
+    --accent:#ff7abf; --muted:#777;
+  }
+
+  /* Themes per aspect */
+  body.theme-dusk { --bg:#1a1624; --paper:#0e0b14; --text:#efeaf3; --muted:#b6aeca; --accent:#ff7abf }
+  body.theme-emerald { --bg:#0a1512; --paper:#0f1d19; --text:#eaf6f2; --muted:#9fc8bd; --accent:#20c997 }
+  body.theme-gold { --bg:#20190c; --paper:#15100a; --text:#fff6e0; --muted:#dac7a1; --accent:#ffca66 }
+  body.theme-ink { --bg:#0a0d12; --paper:#0b0f16; --text:#e9edf1; --muted:#98a2b3; --accent:#7cd1ff }
+
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); display:grid; place-items:center; font-family:var(--mono); color:var(--text);
+    transition: background 600ms ease;
+  }
+  /* A11y helpers */
+  .skip{position:absolute; left:-9999px; top:0; background:#000; color:#fff; padding:6px 8px; z-index:9999}
+  .skip:focus{left:10px; top:10px; border-radius:4px}
+  .home{ position: fixed; top: 12px; left: 14px; z-index: 50; font:12px var(--mono); color:#111; text-decoration: none; background:#e8e8e8; border:1px solid var(--shadow); padding:6px 8px; }
+  .home:focus-visible{ outline:2px solid #000; outline-offset:2px }
+
+  /* Window frame (Notepad) */
+  .win{
+    width:min(980px, 96vw); background:var(--face);
+    box-shadow: 0 0 0 1px var(--dark), 0 0 0 2px var(--shadow), 0 0 0 3px var(--light), 0 30px 70px rgba(0,0,0,.35);
+  }
+  .titlebar{
+    background:linear-gradient(90deg,var(--blue),var(--blue2)); color:#fff; padding:4px 8px;
+    display:flex; align-items:center; gap:8px; user-select:none; cursor:default;
+  }
+  .titlebar .icon{width:16px;height:16px;background:#fff; display:inline-block; box-shadow:inset 0 0 0 1px #000}
+  .titlebar .title{flex:1; font-size:13px; letter-spacing:.02em}
+  .controls{display:flex; gap:4px}
+  .controls button{ width:18px; height:18px; font:12px/18px var(--mono); text-align:center; border:none; color:#111;
+    box-shadow:inset -1px -1px 0 var(--dark), inset 1px 1px 0 var(--light), inset -2px -2px 0 var(--shadow), inset 2px 2px 0 #fff;
+    background:#dcdcdc; cursor:pointer; }
+  .controls button:active{ box-shadow:inset 1px 1px 0 var(--dark), inset -1px -1px 0 var(--light), inset 2px 2px 0 var(--shadow), inset -2px -2px 0 #fff }
+
+  /* Menu + toolbar */
+  .menu{ display:flex; gap:18px; padding:4px 8px; font-size:13px; background:#ececec; border-bottom:1px solid var(--shadow); align-items:center }
+  .menu a{ color:#000; text-decoration:none; position:relative }
+  .menu a:hover::after{content:''; position:absolute; left:0; right:0; bottom:-2px; height:1px; background:#000}
+  .bar{ margin-left:auto; display:flex; gap:8px; align-items:center }
+  .btn{ border:none; font:12px var(--mono); padding:3px 8px; background:#e8e8e8; color:#111; cursor:pointer;
+    box-shadow:inset -1px -1px 0 var(--dark), inset 1px 1px 0 var(--light), inset -2px -2px 0 var(--shadow), inset 2px 2px 0 #fff; }
+  .btn:active{ box-shadow:inset 1px 1px 0 var(--dark), inset -1px -1px 0 var(--light), inset 2px 2px 0 var(--shadow), inset -2px -2px 0 #fff }
+  select{ font:12px var(--mono); padding:2px 4px; }
+
+  /* Editor area */
+  .pad{ position:relative; background:var(--paper); border:1px solid var(--shadow); margin:8px; height:62vh; overflow:auto;
+    box-shadow:inset -1px -1px 0 var(--dark), inset 1px 1px 0 var(--light);
+  }
+  /* Star parallax layers behind text */
+  .starsL1, .starsL2, .starsL3{ position:absolute; inset:0; pointer-events:none; opacity:.12; background-repeat:repeat; }
+  .starsL1{ background-image:
+      radial-gradient(circle at 10% 20%, #fff 0 1px, transparent 2px),
+      radial-gradient(circle at 60% 40%, #fff 0 1px, transparent 2px),
+      radial-gradient(circle at 30% 80%, #fff 0 1px, transparent 2px);
+    animation: drift1 60s linear infinite; }
+  .starsL2{ opacity:.10; background-image:
+      radial-gradient(circle at 25% 30%, #fff 0 1px, transparent 2px),
+      radial-gradient(circle at 75% 70%, #fff 0 1px, transparent 2px),
+      radial-gradient(circle at 50% 50%, #fff 0 1px, transparent 2px);
+    animation: drift2 90s linear infinite; }
+  .starsL3{ opacity:.08; background-image:
+      radial-gradient(circle at 15% 60%, #fff 0 1px, transparent 2px),
+      radial-gradient(circle at 65% 20%, #fff 0 1px, transparent 2px);
+    animation: drift3 140s linear infinite; }
+  @keyframes drift1 { from { background-position: 0 0, 0 0, 0 0 } to { background-position: 200px 0, 100px 20px, -120px -30px } }
+  @keyframes drift2 { from { background-position: 0 0, 0 0, 0 0 } to { background-position: -160px -20px, 140px 10px, 60px -40px } }
+  @keyframes drift3 { from { background-position: 0 0, 0 0 } to { background-position: 240px 30px, -200px -40px } }
+  pre#editor{ margin:0; padding:12px 14px; font:14px/1.2 var(--mono); white-space:pre; tab-size:4; min-height:100%; color:var(--text);
+    text-shadow:0 1px 0 rgba(0,0,0,.35); opacity:0; transform: translateY(6px); transition: opacity 600ms ease, transform 600ms ease; }
+  pre#editor.show{ opacity:1; transform: translateY(0); }
+
+  /* Status bar */
+  .status{ display:flex; gap:16px; padding:4px 8px; font-size:12px; background:#ececec; border-top:1px solid var(--shadow); color:#222; }
+
+  /* Neon & scanlines */
+  .scanlines{ pointer-events:none; position:absolute; inset:0; opacity:.07; mix-blend-mode:multiply; display:none; background:
+    repeating-linear-gradient(180deg, rgba(0,0,0,.8) 0, rgba(0,0,0,.8) 1px, transparent 2px, transparent 3px); }
+  body.neon .scanlines{ display:block }
+  body.neon .titlebar{ background:linear-gradient(90deg,#5b3cff,#e945bf,#ffb100) }
+  body.neon pre#editor{ color:transparent; background:linear-gradient(90deg,#ffffff,#ffd1dc,#ff89b3,#ffe6f2,#ffffff);
+    -webkit-background-clip:text; background-clip:text; text-shadow:0 0 12px rgba(255,105,180,.35); }
+  .floaters{ position:absolute; inset:0; overflow:hidden; pointer-events:none; display:none }
+  body.neon .floaters{ display:block }
+  .floater{ position:absolute; font-size:12px; animation:drift 12s linear infinite; opacity:.35; filter:drop-shadow(0 0 6px rgba(233,30,99,.5)); color:var(--accent) }
+  @keyframes drift{ 0%{transform:translateY(0) translateX(0) rotate(0deg)} 50%{transform:translateY(-40px) translateX(8px) rotate(6deg)} 100%{transform:translateY(0) translateX(0) rotate(0deg)} }
+
+  /* Watermark toggle */
+  body.hide-badge .watermark{ display:none }
+
+  @media print{ body{background:#fff; display:block} .win{box-shadow:none; border:none} .menu,.controls,.status,.floaters,.scanlines,.bar{display:none} .pad{height:auto; margin:0; border:none; box-shadow:none} }
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important }
+    pre#editor{ transition: none }
+    .floaters{ display:none !important }
+  }
+</style>
+</head>
+<body class="theme-dusk">
+  <a class="skip" href="#editor">Skip to content</a>
+  <a class="home" href="../" aria-label="Back to home">⟵ Home</a>
+  <div class="win" role="application" aria-label="Notepad — codex_sortie.txt">
+    <div class="titlebar" id="titlebar" title="Double‑click to toggle Neon Mode">
+      <span class="icon" aria-hidden="true"></span>
+      <span class="title">codex_sortie.txt - Notepad</span>
+      <div class="controls" aria-hidden="true">
+        <button title="Minimize" tabindex="-1" aria-hidden="true">–</button>
+        <button title="Maximize" tabindex="-1" aria-hidden="true">□</button>
+        <button title="Close" tabindex="-1" aria-hidden="true">×</button>
+      </div>
+    </div>
+
+    <nav class="menu" aria-label="Menu">
+      <a href="#" id="mFile">File</a>
+      <a href="#" id="mEdit">Edit</a>
+      <a href="#" id="mFormat">Format</a>
+      <a href="#" id="mView">View</a>
+      <a href="#" id="mHelp">Help</a>
+      <div class="bar">
+        <button class="btn" id="prevBtn" title="Prev (←)">◀</button>
+        <button class="btn" id="playBtn" title="Play/Pause (Space)">▶</button>
+        <button class="btn" id="nextBtn" title="Next (→)">▶▶</button>
+        <button class="btn" id="exportBtn" title="Export all frames">Export</button>
+        <button class="btn" id="loopBtn" title="Toggle loop">Loop: Off</button>
+        <button class="btn" id="autoExpBtn" title="Toggle auto-export at end">AutoExp: On</button>
+        <label style="opacity:.8">Speed
+          <select id="speed">
+            <option value="3200">Slow</option>
+            <option value="2200" selected>Normal</option>
+            <option value="1400">Fast</option>
+            <option value="900">Hyper</option>
+          </select>
+        </label>
+        <label style="opacity:.8">Theme
+          <select id="theme">
+            <option value="dusk">Dusk</option>
+            <option value="emerald">Emerald</option>
+            <option value="gold">Gold</option>
+            <option value="ink">Ink</option>
+          </select>
+        </label>
+        <button class="btn" id="neonBtn" title="Neon Mode (Ctrl+Shift+N)">Neon</button>
+        <button class="btn" id="badgeBtn" title="Toggle watermark">Badge</button>
+      </div>
+    </nav>
+
+    <div class="pad">
+      <div class="starsL1" aria-hidden="true"></div>
+      <div class="starsL2" aria-hidden="true"></div>
+      <div class="starsL3" aria-hidden="true"></div>
+      <pre id="editor" aria-label="Text editor" spellcheck="false"></pre>
+      <div class="scanlines" aria-hidden="true"></div>
+      <div class="floaters" id="floaters" aria-hidden="true"></div>
+      <div class="watermark" style="position:absolute; top:6px; right:10px; font-size:11px; color:var(--muted); opacity:.7; letter-spacing:.06em">CODEX</div>
+    </div>
+
+    <div class="status" aria-label="Status bar">
+      <span id="loc">Ln 1, Col 1</span>
+      <span id="frameIdx">Frame 1/1</span>
+      <span id="caption">—</span>
+      <span style="margin-left:auto;opacity:.7">Tip: Space to play/pause • ←/→ to navigate • Double‑click title for Neon</span>
+    </div>
+  </div>
+
+<script>
+// ====== Frame-by-frame Notepad art for Annusha (smooth crossfades) ======
+const editor = document.getElementById('editor');
+const loc = document.getElementById('loc');
+const cap = document.getElementById('caption');
+const frameIdxEl = document.getElementById('frameIdx');
+const playBtn = document.getElementById('playBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const speedSel = document.getElementById('speed');
+const themeSel = document.getElementById('theme');
+const floaters = document.getElementById('floaters');
+const loopBtn = document.getElementById('loopBtn');
+const autoExpBtn = document.getElementById('autoExpBtn');
+
+// Utility bits
+function centered(s, W){ const L=s.length; if(L>=W) return s.slice(0,W); const left=Math.floor((W-L)/2), right=W-L-left; return ' '.repeat(left)+s+' '.repeat(right); }
+function frameBox(title, text){
+  const lines = text.split('\n');
+  const w = Math.max(...lines.map(l=>l.length), title.length) + 2;
+  const top = '╔' + '═'.repeat(w) + '╗';
+  const hdr = '║ ' + centered(title, w-2) + ' ║';
+  const body = lines.map(l=> '║ ' + (l + ' '.repeat(w-2-l.length)) + ' ║').join('\n');
+  const bot = '╚' + '═'.repeat(w) + '╝';
+  return [top, hdr, body, bot].join('\n');
+}
+
+// Scenes (fighter-jet, stars, and CODEX) — smooth story
+let frames = [
+  { // Prologue — CODEX identity
+    caption: 'chapter i — codex preflight', theme: 'dusk', dur: 2800,
+    text: frameBox('CODEX — flight log', `C   OOO   DDD   EEEE   X  X
+C  O   O  D  D  E       XX
+C  O   O  D  D  EEEE    XX
+C  O   O  D  D  E       XX
+C   OOO   DDD   EEEE   X  X
+
+callsign: A
+mission: night sortie over starlit pages.`)
+  },
+  { // Taxi lights
+    caption: 'chapter ii — taxi', theme: 'ink', dur: 2200,
+    text: frameBox('runway pearls', `|\\   |\\   |\\   |\\   |\\
+| \\__| \\__| \\__| \\__| \\
+|  .  |  .  |  .  |  .  |  .   nav lights counting down—
+|_____|_____|_____|_____|_____  clearance in our ears.`)
+  },
+  { // Fighter — top view swept-delta
+    caption: 'chapter iii — afterburner', theme: 'ink', dur: 1800,
+    text: `
+                   ^
+                  / \\
+                 /_✦_\\
+                /_____\\
+          _____/==|_|==\\_____
+         /_____/===|===\\_____\\
+          \\\\\\\   |   ///////
+            \\\\   |   /////
+              \\   |   //
+               ||  |  ||
+               ||  |  ||
+               ||  |  ||  ✦ ✦
+               ||  |  ||   ✦   ✦
+                 \_|_/
+                  /_\\
+           ✦  ✦   \_/   ✦  ✦
+                         ------------------------------->`
+  },
+  { // Stealth pass — tri-delta silhouette
+    caption: 'chapter iv — stealth', theme: 'ink', dur: 2000,
+    text: `
+                    /\\
+                   /  \\
+                  / /\\ \\
+                 /_/  \\_\\
+           _____/==|__|==\\_____
+          /_____\\/==|==\/_____\\
+             \\  \\  |  //  //
+              \\  \\ | //  //
+               \\  \_|_/  //
+                   /_\\
+                    V
+           ✦   ✦            ✦   ✦
+                         ------------------------------->`
+  },
+  { // Climb through stars
+    caption: 'chapter v — climb', theme: 'ink', dur: 1800,
+    text: frameBox('starfield', `            ✦       ✦        ✦
+      ✦           ✦      ✦       ✦
+   ✦        ✦           ✦     ✦
+
+vectors steady. nose high. night friendly.`)
+  },
+  { // Blossom calm as contrails curl
+    caption: 'chapter vi — vector bloom', theme: 'gold', dur: 2200,
+    text: frameBox('petal arithmetic', `    .   .   .   .   .
+    / \\ / \\ / \\ / \\ / \\
+    \\_/ \\_/ \\_/ \\_/ \\_/
+ 
+     ✦   ✦   ✦   ✦
+ drag subtracts, courage adds.`)
+  },
+  { // Cubist echo — memory of motion
+    caption: 'chapter vii — echo', theme: 'dusk', dur: 2000,
+    text: frameBox('picasso-ish mosaic', `░░░▒▒▒▓▓▓████▓▓▒▒░░░
+  ░▒▓█   ◇   █▓▒░
+  ░▒▓█  /\\_/\\  █▓▒░
+  ░▒▓█  \\_ _/  █▓▒░
+   ░▒▓█   | |  █▓▒░
+    ░▒▓█__|_|_█▓▒░
+ —geometry of speed—`)
+  },
+  { // Reflection — short poem
+    caption: 'chapter viii — reflection', theme: 'gold', dur: 2800,
+    text: frameBox('five lines', `Engines hum like ink.
+ Stars file past in rows.
+ Pages turn to sky.
+ Codex learns our names.
+ I learn your glow.`)
+  },
+  { // Epilogue — calm
+    caption: 'chapter ix — epilogue', theme: 'emerald', dur: 3600,
+    text: frameBox('p.s.', `Smooth landing, lights warm.
+ Keep that smile for me. ✦
+ 
+ [ codex + a ]`)
+  },
+  { // End card — CODEX
+    caption: 'chapter x — end card', theme: 'dusk', dur: 2200,
+    text: frameBox('CODEX', `call sign: A
+sortie: complete
+status: green
+
+thank you for flying the night.`)
+  }
+];
+
+// Player state
+let i = 0;                 // frame index
+let playing = false;       // play/pause
+let fadeTimer = 0;         // fade timeout
+let playTimer = 0;         // play timeout between scenes
+let frameDur = +speedSel.value; // ms per frame
+const FADE = 600;          // ms fade duration (match CSS)
+let loop = false;          // loop story
+let autoExport = true;     // auto-export at end
+
+function spawnFloaters(n=18){
+  floaters.innerHTML = '';
+  for(let k=0;k<n;k++){
+    const el = document.createElement('div');
+    el.className = 'floater';
+    el.textContent = '✦';
+    el.style.left = Math.random()*95 + '%';
+    el.style.top = Math.random()*85 + '%';
+    el.style.animationDelay = (Math.random()*-10).toFixed(2)+'s';
+    el.style.fontSize = (10 + Math.random()*18) + 'px';
+    floaters.appendChild(el);
+  }
+}
+
+function setTheme(name){
+  document.body.classList.remove('theme-dusk','theme-emerald','theme-gold','theme-ink');
+  document.body.classList.add('theme-'+name);
+}
+
+function updateStatus(){
+  frameIdxEl.textContent = `Frame ${i+1}/${frames.length}`;
+  cap.textContent = frames[i].caption;
+}
+
+function clearTimers(){ clearTimeout(fadeTimer); clearTimeout(playTimer); }
+
+function showFrame(k){
+  i = (k + frames.length) % frames.length;
+  setTheme(frames[i].theme);
+  themeSel.value = frames[i].theme;
+  updateStatus();
+  // Smooth crossfade
+  editor.classList.remove('show');
+  clearTimers();
+  fadeTimer = setTimeout(()=>{
+    editor.textContent = frames[i].text + '\n';
+    // update caret position info
+    const lines = editor.textContent.split('\n');
+    const line = lines.length; const col = (lines[lines.length-1]||'').length + 1;
+    loc.textContent = `Ln ${line}, Col ${col}`;
+    editor.parentElement.scrollTop = 0;
+    // fade in
+    editor.classList.add('show');
+    const dur = frames[i].dur || frameDur;
+    if(playing){ playTimer = setTimeout(nextFrame, dur); }
+  }, 20); // small delay to allow CSS to capture removal
+}
+
+function nextFrame(){
+  if(i >= frames.length - 1){
+    if(loop){ showFrame(0); }
+    else {
+      if(autoExport) exportAll();
+      playing = false; playBtn.textContent = '▶'; clearTimers();
+    }
+  } else {
+    showFrame(i+1);
+  }
+}
+function prevFrame(){ showFrame(i-1); }
+
+// Controls
+playBtn.addEventListener('click', ()=>{ playing = !playing; playBtn.textContent = playing ? '⏸' : '▶'; if(playing) nextFrame(); else clearTimers(); });
+prevBtn.addEventListener('click', ()=>{ playing = false; playBtn.textContent = '▶'; clearTimers(); prevFrame(); });
+nextBtn.addEventListener('click', ()=>{ playing = false; playBtn.textContent = '▶'; clearTimers(); nextFrame(); });
+speedSel.addEventListener('change', ()=>{ frameDur = +speedSel.value; });
+themeSel.addEventListener('change', ()=>{ setTheme(themeSel.value); });
+loopBtn.addEventListener('click', ()=>{ loop = !loop; loopBtn.textContent = `Loop: ${loop? 'On':'Off'}`; });
+autoExpBtn.addEventListener('click', ()=>{ autoExport = !autoExport; autoExpBtn.textContent = `AutoExp: ${autoExport? 'On':'Off'}`; });
+
+// Menu: File > Save As… of current frame content (as shown)
+document.getElementById('mFile').addEventListener('click', (e)=>{
+  e.preventDefault();
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([editor.textContent], {type:'text/plain;charset=utf-8'}));
+  a.download = `frame_${i+1}.txt`;
+  document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },0);
+});
+
+// Export: compile all frames into one file
+function exportAll(){
+  const out = frames.map(f=>[`=== ${f.caption} ===`, f.text, ''].join('\n')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([out], {type:'text/plain;charset=utf-8'}));
+  a.download = 'codex_sortie.txt';
+  document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },0);
+}
+document.getElementById('exportBtn').addEventListener('click', exportAll);
+
+// View: Neon toggle button + titlebar double-click + keyboard
+const neonBtn = document.getElementById('neonBtn');
+function toggleNeon(){ document.body.classList.toggle('neon'); if(document.body.classList.contains('neon')) spawnFloaters(); }
+neonBtn.addEventListener('click', toggleNeon);
+document.getElementById('titlebar').addEventListener('dblclick', toggleNeon);
+// Badge toggle
+document.getElementById('badgeBtn').addEventListener('click', ()=>{
+  document.body.classList.toggle('hide-badge');
+});
+window.addEventListener('keydown',(ev)=>{
+  if(ev.code === 'Space'){ ev.preventDefault(); playing = !playing; playBtn.textContent = playing ? '⏸' : '▶'; if(playing) nextFrame(); else clearTimers(); }
+  if(ev.key === 'ArrowRight'){ ev.preventDefault(); playing = false; playBtn.textContent='▶'; clearTimers(); nextFrame(); }
+  if(ev.key === 'ArrowLeft'){ ev.preventDefault(); playing = false; playBtn.textContent='▶'; clearTimers(); prevFrame(); }
+  if(ev.ctrlKey && ev.shiftKey && ev.key.toLowerCase()==='n'){ toggleNeon(); }
+});
+
+// Boot
+showFrame(0);
+// Respect reduced-motion: don’t autoplay
+const prefersReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!prefersReduce) { playing = true; playBtn.textContent = '⏸'; setTimeout(()=>{ nextFrame(); }, 300); }
+// Minimal API for other agents
+window.CODEX = {
+  addFrames(arr){ if(Array.isArray(arr)) { frames = frames.concat(arr); updateStatus(); } },
+  play(){ playing = true; playBtn.textContent = '⏸'; nextFrame(); },
+  pause(){ playing = false; playBtn.textContent = '▶'; clearTimers(); },
+  getFrames(){ return frames.map(f=>({caption:f.caption, theme:f.theme, dur:f.dur, text:f.text})); }
+};
+</script>
+<script>
+// Root service worker + Love Index overlay (monochrome to match window style)
+if ('serviceWorker' in navigator) { window.addEventListener('load', ()=> navigator.serviceWorker.register('../site-sw.js').catch(()=>{})); }
+(function(){
+  const style = document.createElement('style');
+  style.textContent = `.lovebtn{position:fixed; right:14px; bottom:14px; width:42px; height:42px; border-radius:50%; display:grid; place-items:center; background:#e8e8e8; border:1px solid var(--shadow); color:#111; cursor:pointer; z-index:9999} .lovebtn:focus-visible{outline:2px solid #000; outline-offset:2px} .loveidx{position:fixed; inset:0; display:none; z-index:10000} .loveidx.show{display:block} .loveidx .back{position:absolute; inset:0; background:rgba(0,0,0,.4)} .loveidx .panel{position:relative; margin:10vh auto; max-width:680px; background:#eaeaea; border:1px solid var(--shadow); border-radius:10px; padding:12px; color:#111; box-shadow:0 20px 40px rgba(0,0,0,.3)}`;
+  document.head.appendChild(style);
+  const wrap = document.createElement('div'); wrap.className='loveidx';
+  const back = document.createElement('div'); back.className='back';
+  const panel = document.createElement('div'); panel.className='panel'; panel.role='dialog'; panel.ariaModal='true';
+  const h = document.createElement('h2'); h.textContent = 'Love Index'; panel.appendChild(h);
+  const nav = document.createElement('nav'); nav.setAttribute('aria-label','Love Index');
+  const home = '../';
+  [['Home', home], ['Notepad Letter', home+'notepad.html'], ['Love Flight', home+'annusha-love-flight/index.html'], ['Flag + Plane', home+'art/annusha_plane_flag.html'], ['Cubist Plane', home+'art/annusha_cubist_plane.html'], ['Notepad Frames', home+'art/notepad_frames.html']]
+    .forEach(([n,u])=>{ const a=document.createElement('a'); a.href=u; a.textContent=n; nav.appendChild(a); });
+  panel.appendChild(nav); wrap.appendChild(back); wrap.appendChild(panel); document.body.appendChild(wrap);
+  function open(){ wrap.classList.add('show'); (panel.querySelector('a')||panel).focus(); }
+  function close(){ wrap.classList.remove('show'); btn.focus(); }
+  back.addEventListener('click', close);
+  window.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && wrap.classList.contains('show')) close(); if(e.key==='?' || (e.shiftKey && e.key==='/')) open(); });
+  const btn = document.createElement('button'); btn.className='lovebtn'; btn.type='button'; btn.setAttribute('aria-label','Open Love Index'); btn.textContent='❤'; btn.addEventListener('click', open); document.body.appendChild(btn);
+})();
+</script>
+<script>
+// Soft page transitions (flow)
+(function(){
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const s2 = document.createElement('style'); s2.textContent = `body.fade-init{opacity:0} body.fade-in{opacity:1; transition:opacity .3s ease}`; document.head.appendChild(s2);
+  document.body.classList.add('fade-init'); requestAnimationFrame(()=>{ if(!reduce){ document.body.classList.add('fade-in'); }});
+  document.addEventListener('click',(e)=>{
+    const a = e.target.closest('a[href]'); if(!a) return;
+    const url = new URL(a.href, location.href);
+    if (url.origin === location.origin) { if(!reduce){ e.preventDefault(); document.body.classList.remove('fade-in'); setTimeout(()=>{ location.href = a.href; }, 180); } }
+  }, true);
+})();
+</script>
+</body>
+</html>

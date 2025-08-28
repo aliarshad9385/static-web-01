@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>for_annusha.txt - Notepad</title>
+<style>
+  /* === Desktop background (Win9x vibe) === */
+  :root{
+    --blue:#000080; --blue2:#0016a8;
+    --face:#c0c0c0; --light:#ffffff; --shadow:#808080; --dark:#404040;
+    --text:#000; --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  }
+  html,body{height:100%}
+  body{
+    margin:0; background:linear-gradient(180deg,#bdbdbd,#cfcfcf 30%,#bcbcbc);
+    display:grid; place-items:center; font-family:var(--mono); color:var(--text);
+  }
+  /* Skip link + focus */
+  .skip{position:absolute; left:-9999px; top:0; background:#000; color:#fff; padding:6px 8px; z-index:9999}
+  .skip:focus{left:10px; top:10px; border-radius:4px}
+  a:focus-visible, button:focus-visible{ outline:2px solid #000; outline-offset:2px }
+  /* Home link */
+  .home{position:fixed; top:10px; right:12px; z-index:9; font:12px/1 var(--mono); color:#111; text-decoration:none;
+    background:#f0f0f0; padding:6px 8px; border:1px solid var(--shadow);
+    box-shadow:inset -1px -1px 0 var(--dark), inset 1px 1px 0 var(--light), 0 6px 16px rgba(0,0,0,.18)}
+  .home:active{box-shadow:inset 1px 1px 0 var(--dark), inset -1px -1px 0 var(--light)}
+
+  /* === Window frame (Notepad) === */
+  .win{
+    width:min(920px, 95vw); background:#eaeaea;
+    box-shadow:
+      0 0 0 1px var(--dark),
+      0 0 0 2px var(--shadow),
+      0 0 0 3px var(--light),
+      0 20px 40px rgba(0,0,0,.25);
+    border:2px solid transparent;
+  }
+  .titlebar{
+    background:linear-gradient(90deg,var(--blue),var(--blue2));
+    color:#fff; padding:4px 8px; display:flex; align-items:center; gap:8px; user-select:none; cursor:default;
+  }
+  .titlebar .icon{width:16px;height:16px;background:#fff; display:inline-block; box-shadow:inset 0 0 0 1px #000}
+  .titlebar .title{flex:1; font-size:13px; letter-spacing:.02em}
+  .controls{display:flex; gap:4px}
+  .controls button{
+    width:18px; height:18px; font:12px/18px var(--mono); text-align:center; border:none; color:#111;
+    box-shadow:inset -1px -1px 0 var(--dark), inset 1px 1px 0 var(--light), inset -2px -2px 0 var(--shadow), inset 2px 2px 0 #fff;
+    background:#dcdcdc; cursor:pointer;
+  }
+  .controls button:active{box-shadow:inset 1px 1px 0 var(--dark), inset -1px -1px 0 var(--light), inset 2px 2px 0 var(--shadow), inset -2px -2px 0 #fff}
+
+  /* === Menu bar === */
+  .menu{
+    display:flex; gap:18px; padding:4px 8px; font-size:13px; background:#ececec; border-bottom:1px solid var(--shadow);
+  }
+  .menu a{color:#000; text-decoration:none; position:relative}
+  .menu a:hover::after{content:''; position:absolute; left:0; right:0; bottom:-2px; height:1px; background:#000}
+
+  /* === Editor area (looks like Notepad textarea) === */
+  .pad{
+    position:relative; background:#fff; border:1px solid var(--shadow);
+    margin:8px; height:60vh; overflow:auto;
+    box-shadow:inset -1px -1px 0 var(--dark), inset 1px 1px 0 var(--light);
+  }
+  pre#editor{
+    margin:0; padding:8px 10px; font:14px/1.2 var(--mono); white-space:pre; tab-size:4; min-height:100%;
+  }
+
+  /* === Status bar === */
+  .status{
+    display:flex; gap:16px; padding:4px 8px; font-size:12px; background:#ececec; border-top:1px solid var(--shadow); color:#222;
+  }
+
+  /* === Easter eggs: scanlines + neon mode (toggle) === */
+  .scanlines{
+    pointer-events:none; position:absolute; inset:0; opacity:.07; mix-blend-mode:multiply; display:none;
+    background:
+      repeating-linear-gradient(180deg, rgba(0,0,0,.8) 0, rgba(0,0,0,.8) 1px, transparent 2px, transparent 3px);
+  }
+  body.neon .scanlines{display:block}
+  body.neon .titlebar{background:linear-gradient(90deg,#5b3cff,#e945bf,#ffb100)}
+  body.neon pre#editor{
+    color:transparent;
+    background:linear-gradient(90deg,#ffffff,#ffd1dc,#ff89b3,#ffe6f2,#ffffff);
+    -webkit-background-clip:text; background-clip:text;
+    text-shadow:0 0 12px rgba(255,105,180,.35);
+  }
+
+  /* === Little floating hearts for neon mode === */
+  .floaters{position:absolute; inset:0; overflow:hidden; pointer-events:none; display:none}
+  body.neon .floaters{display:block}
+  .floater{
+    position:absolute; font-size:12px; animation:drift 12s linear infinite; opacity:.35; filter:drop-shadow(0 0 6px rgba(233,30,99,.5));
+  }
+  @keyframes drift{
+    0%{transform:translateY(0) translateX(0) rotate(0deg)}
+    50%{transform:translateY(-40px) translateX(8px) rotate(6deg)}
+    100%{transform:translateY(0) translateX(0) rotate(0deg)}
+  }
+
+  /* Print-friendly */
+  @media print{
+    body{background:#fff; display:block}
+    .win{box-shadow:none; border:none}
+    .menu,.controls,.status,.floaters,.scanlines{display:none}
+    .pad{height:auto; margin:0; border:none; box-shadow:none}
+  }
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important }
+    .floaters{ display:none !important }
+  }
+</style>
+</head>
+<body>
+  <a class="skip" href="#editor">Skip to content</a>
+  <a class="home" href="./">⟵ Home</a>
+  <div class="win" role="application" aria-label="Notepad — for_annusha.txt">
+    <div class="titlebar" id="titlebar" title="Double‑click to toggle Neon Mode">
+      <span class="icon" aria-hidden="true"></span>
+      <span class="title">for_annusha.txt - Notepad</span>
+      <div class="controls" aria-hidden="true">
+        <button title="Minimize" tabindex="-1" aria-hidden="true">–</button>
+        <button title="Maximize" tabindex="-1" aria-hidden="true">□</button>
+        <button title="Close" tabindex="-1" aria-hidden="true">×</button>
+      </div>
+    </div>
+
+    <nav class="menu" aria-label="Menu">
+      <a href="#" id="mFile">File</a>
+      <a href="#" id="mEdit">Edit</a>
+      <a href="#" id="mFormat">Format</a>
+      <a href="#" id="mView">View</a>
+      <a href="#" id="mHelp">Help</a>
+    </nav>
+
+    <div class="pad">
+      <pre id="editor" aria-label="Text editor" spellcheck="false"></pre>
+      <div class="scanlines" aria-hidden="true"></div>
+      <div class="floaters" id="floaters" aria-hidden="true"></div>
+    </div>
+
+    <div class="status" aria-label="Status bar">
+      <span id="loc">Ln 1, Col 1</span>
+      <span>100%</span>
+      <span>Windows (CRLF)</span>
+      <span>UTF‑8</span>
+      <span style="margin-left:auto;opacity:.7">Tip: Double‑click the title for Neon Mode</span>
+    </div>
+  </div>
+
+<script>
+/* ====== Notepad-grade ASCII sorcery for Annusha ====== */
+
+const editor = document.getElementById('editor');
+const loc = document.getElementById('loc');
+const floaters = document.getElementById('floaters');
+
+/* Build a big ASCII heart using the famous curve: (x² + y² − 1)³ − x²y³ ≤ 0 */
+function heartArt(rows=32, cols=84){
+  const chars = " .,:;!+*#%@$";               // density ramp (light → dark)
+  let out = [];
+  for(let i=0;i<rows;i++){
+    let y = 1.35 - (i/(rows-1))*2.7;          // map to [-1.35, 1.35]
+    let line = "";
+    for(let j=0;j<cols;j++){
+      let x = -1.8 + (j/(cols-1))*3.6;        // map to [-1.8, 1.8]
+      let v = Math.pow(x*x + y*y - 1, 3) - x*x*y*y*y;
+      if(v <= 0){
+        // Map distance from boundary → character index
+        const d = Math.min(1, Math.abs(v)*3.5);
+        const k = Math.max(0, Math.min(chars.length-1, Math.floor((1-d)*(chars.length-1))));
+        line += chars[k];
+      } else {
+        line += " ";
+      }
+    }
+    out.push(line.replace(/\s+$/,""));        // trim trailing spaces
+  }
+  return out.join("\n");
+}
+
+/* A frame & inscription to level it up */
+function frameIt(text){
+  const lines = text.split("\n");
+  const w = Math.max(...lines.map(l=>l.length));
+  const pad = (s)=> s + " ".repeat(w - s.length);
+  const top = "╔" + "═".repeat(w + 2) + "╗";
+  const bot = "╚" + "═".repeat(w + 2) + "╝";
+  const body = lines.map(l=>"║ "+pad(l)+" ║").join("\n");
+  const tag  = centered("— For ANNUSHA —", w+2);
+  const note = centered("You make ordinary moments feel like golden hours.", w+2);
+  return [top, body, "║ "+tag+" ║", "║ "+note+" ║", bot].join("\n");
+}
+
+function centered(s, W){
+  const L = s.length; if(L>=W) return s.slice(0,W);
+  const left = Math.floor((W-L)/2), right = W-L-left;
+  return " ".repeat(left) + s + " ".repeat(right);
+}
+
+/* Typewriter render with auto-scroll */
+async function typeOut(text, cps=650){
+  editor.textContent = "";
+  let i=0, t0=0, step = Math.max(1, Math.floor(text.length / cps));
+  function tick(ts){
+    if(!t0) t0 = ts;
+    while(i < text.length){
+      editor.textContent += text[i++];
+      if(text[i-1] === "\n"){
+        // update status
+        const lines = editor.textContent.split("\n");
+        const line = lines.length;
+        const col  = (lines[lines.length-1] || "").length + 1;
+        loc.textContent = `Ln ${line}, Col ${col}`;
+        editor.parentElement.scrollTop = editor.parentElement.scrollHeight;
+        break;
+      }
+      if(i % step === 0) break;
+    }
+    if(i < text.length) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+/* Neon mode floaters */
+function spawnFloaters(n=16){
+  floaters.innerHTML = "";
+  for(let i=0;i<n;i++){
+    const el = document.createElement("div");
+    el.className = "floater";
+    el.textContent = "♥";
+    el.style.left = Math.random()*95 + "%";
+    el.style.top = Math.random()*85 + "%";
+    el.style.animationDelay = (Math.random()*-10).toFixed(2)+"s";
+    el.style.fontSize = (10 + Math.random()*18) + "px";
+    floaters.appendChild(el);
+  }
+}
+
+/* Save-as (File > Save As...) */
+function saveAsTxt(filename, text){
+  const blob = new Blob([text], {type:"text/plain;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove() }, 0);
+}
+
+/* Build content */
+const art = frameIt(heartArt(30, 76)) + "\n\n" +
+`Dear Annusha,
+
+You probably don't notice it, but you bend time a little:
+the quiet bits turn bright, and the long bits turn light.
+
+— keep being you.`;
+
+/* Render on load; respect reduced motion */
+const prefersReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (prefersReduce) {
+  editor.textContent = art;
+  const lines = editor.textContent.split("\n");
+  const line = lines.length;
+  const col  = (lines[lines.length-1] || "").length + 1;
+  loc.textContent = `Ln ${line}, Col ${col}`;
+} else {
+  typeOut(art);
+}
+
+/* Menus (tiny, purposeful) */
+document.getElementById("mFile").addEventListener("click", (e)=>{
+  e.preventDefault();
+  saveAsTxt("for_annusha.txt", editor.textContent);
+});
+document.getElementById("mView").addEventListener("click", (e)=>{
+  e.preventDefault();
+  document.body.classList.toggle("neon");
+  if(document.body.classList.contains("neon")) spawnFloaters();
+});
+document.getElementById("mHelp").addEventListener("click", (e)=>{
+  e.preventDefault();
+  alert("Notepad (special edition)\n\nShortcuts:\n• Ctrl+Shift+N — Neon Mode\n• File — Save As…\n• Print via your browser (Ctrl/Cmd+P)");
+});
+
+/* Titlebar toggles Neon Mode */
+document.getElementById("titlebar").addEventListener("dblclick", ()=>{
+  document.body.classList.toggle("neon");
+  if(document.body.classList.contains("neon")) spawnFloaters();
+});
+
+/* Keyboard: Ctrl+Shift+N for Neon */
+window.addEventListener("keydown",(ev)=>{
+  if(ev.ctrlKey && ev.shiftKey && (ev.key.toLowerCase()==="n")){
+    document.body.classList.toggle("neon");
+    if(document.body.classList.contains("neon")) spawnFloaters();
+  }
+});
+// Root service worker + Love Index overlay
+if ('serviceWorker' in navigator) { window.addEventListener('load', ()=> navigator.serviceWorker.register('./site-sw.js').catch(()=>{})); }
+(function(){
+  const style = document.createElement('style');
+  style.textContent = `.lovebtn{position:fixed; right:14px; bottom:14px; width:42px; height:42px; border-radius:50%; display:grid; place-items:center; background:rgba(0,0,0,.1); border:1px solid var(--shadow); color:#111; cursor:pointer; z-index:9999} .lovebtn:focus-visible{outline:2px solid #000; outline-offset:2px} .loveidx{position:fixed; inset:0; display:none; z-index:10000} .loveidx.show{display:block} .loveidx .back{position:absolute; inset:0; background:rgba(0,0,0,.5)} .loveidx .panel{position:relative; margin:10vh auto; max-width:620px; background:#eaeaea; border:1px solid var(--shadow); border-radius:10px; padding:12px; color:#111; box-shadow:0 20px 40px rgba(0,0,0,.3)} .loveidx a{display:block; color:#000; text-decoration:none; padding:8px 6px; border-radius:6px} .loveidx a:hover, .loveidx a:focus-visible{ background:#f2f2f2; outline:none }`;
+  document.head.appendChild(style);
+  const wrap = document.createElement('div'); wrap.className='loveidx';
+  const back = document.createElement('div'); back.className='back';
+  const panel = document.createElement('div'); panel.className='panel'; panel.role='dialog'; panel.ariaModal='true';
+  const h = document.createElement('h2'); h.textContent = 'Love Index'; panel.appendChild(h);
+  const nav = document.createElement('nav'); nav.setAttribute('aria-label','Love Index');
+  const home = './';
+  [['Home', home], ['Notepad Letter', home+'notepad.html'], ['Love Flight', home+'annusha-love-flight/index.html'], ['Flag + Plane', home+'art/annusha_plane_flag.html'], ['Cubist Plane', home+'art/annusha_cubist_plane.html'], ['Notepad Frames', home+'art/notepad_frames.html']]
+    .forEach(([n,u])=>{ const a=document.createElement('a'); a.href=u; a.textContent=n; nav.appendChild(a); });
+  panel.appendChild(nav); wrap.appendChild(back); wrap.appendChild(panel); document.body.appendChild(wrap);
+  function open(){ wrap.classList.add('show'); (panel.querySelector('a')||panel).focus(); }
+  function close(){ wrap.classList.remove('show'); btn.focus(); }
+  back.addEventListener('click', close);
+  window.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && wrap.classList.contains('show')) close(); if(e.key==='?' || (e.shiftKey && e.key==='/')) open(); });
+  const btn = document.createElement('button'); btn.className='lovebtn'; btn.type='button'; btn.setAttribute('aria-label','Open Love Index'); btn.textContent='❤'; btn.addEventListener('click', open); document.body.appendChild(btn);
+  // Soft page transitions (flow)
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const s2 = document.createElement('style'); s2.textContent = `body.fade-init{opacity:0} body.fade-in{opacity:1; transition:opacity .3s ease}`; document.head.appendChild(s2);
+  document.body.classList.add('fade-init'); requestAnimationFrame(()=>{ if(!reduce){ document.body.classList.add('fade-in'); }});
+  document.addEventListener('click',(e)=>{
+    const a = e.target.closest('a[href]'); if(!a) return;
+    const url = new URL(a.href, location.href);
+    if (url.origin === location.origin) { if(!reduce){ e.preventDefault(); document.body.classList.remove('fade-in'); setTimeout(()=>{ location.href = a.href; }, 180); } }
+  }, true);
+})();
+</script>
+</body>
+</html>

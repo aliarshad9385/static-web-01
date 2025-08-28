@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# OS
+.DS_Store
+
+# Editors
+.vscode/
+
+# Archives
+*.zip
+
+# Logs
+*.log
+

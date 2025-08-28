@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>To: Annusha — the baddest b possible</title>
+  <style>
+    :root {
+      --bg: #0d0f12;
+      --fg: #e9edf1;
+      --muted: #98a2b3;
+      --heart: #ff4da6;
+      --flag-green: #0a7d35;
+      --flag-white: #ffffff;
+      --pole: #6b7280;
+    }
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); }
+    body { display: grid; place-items: center; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    /* A11y helpers */
+    .skip{position:absolute; left:-9999px; top:0; background:#000; color:#fff; padding:6px 8px; z-index:9999}
+    .skip:focus{left:10px; top:10px; border-radius:4px}
+    .home{ position: fixed; top: 12px; left: 14px; z-index: 50; font-size: 12px; color: var(--fg); text-decoration: none; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); padding: 6px 8px; border-radius: 8px; }
+    .home:hover{ background: rgba(255,255,255,.12) }
+    a:focus-visible{ outline:2px solid #fff; outline-offset:2px }
+    .card {
+      width: min(900px, 92vw);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 20px 22px 16px 22px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+      position: relative;
+      overflow: hidden;
+    }
+    h1 { font-size: 18px; margin: 0 0 8px 0; letter-spacing: 0.3px; }
+    .row { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: start; }
+    .art { white-space: pre; line-height: 1.05; color: var(--muted); }
+    .art .plane { color: var(--fg); text-shadow: 0 1px 0 rgba(0,0,0,.55); }
+    .art .detail { color: var(--fg); opacity:.9 }
+    .art .hearts { color: var(--heart); animation: pulse 1.5s ease-in-out infinite; text-shadow: 0 0 6px rgba(255,77,166,.35); }
+    .contrail { color: var(--muted); }
+    @keyframes pulse { 0%,100%{opacity:.6; transform: translateY(0);} 50%{opacity:1; transform: translateY(-1px);} }
+
+    /* Flag block (right) */
+    .flag { display: grid; grid-template-rows: repeat(8, 1em); align-items: center; }
+    .pole { color: var(--pole); }
+    .flagline { display: inline-block; }
+    .flagbody { display: inline-block; width: 18ch; height: 1em; position: relative; overflow: hidden; }
+    .stripe-white { background: var(--flag-white); width: 3ch; height: 100%; display: inline-block; vertical-align: top; }
+    .stripe-green { background:
+        linear-gradient(180deg, rgba(255,255,255,.10), transparent 45%),
+        radial-gradient(120% 180% at 30% 50%, rgba(0,0,0,.10), transparent 50%),
+        var(--flag-green);
+      width: calc(100% - 3ch); height: 100%; display: inline-block; vertical-align: top; position: relative;
+      animation: wave 3.6s ease-in-out infinite; mask-image: linear-gradient(90deg, #000 15%, #000 100%);
+      filter: drop-shadow(0 0 1px rgba(0,0,0,.25)); }
+    .crescent, .star { position: absolute; color: var(--flag-white); font-size: .9em; text-shadow: 0 0 4px rgba(255,255,255,.22); }
+    .crescent { left: 5ch; top: 0.05em; }
+    .star { left: 9ch; top: 0.1em; }
+    @keyframes wave {
+      0% { transform: translateX(0) skewY(0.3deg); }
+      50% { transform: translateX(-0.6ch) skewY(-0.3deg); }
+      100% { transform: translateX(0) skewY(0.3deg); }
+    }
+
+    .ps { margin-top: 10px; color: var(--fg); opacity: .9; }
+    .small { color: var(--muted); font-size: 12px; }
+
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce){
+      *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important }
+    }
+  </style>
+  <meta name="description" content="Cute ASCII plane to a waving Pakistani flag for Annusha — with hearts and love." />
+  <meta property="og:title" content="To: Annusha — the baddest b possible" />
+  <meta property="og:description" content="Cute, wholesome, flirty ASCII with hearts and a waving Pakistani flag." />
+  <meta name="theme-color" content="#0a7d35" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a7d35'/%3E%3Crect width='12' height='64' fill='white'/%3E%3Cpath d='M42 26a10 10 0 1 0 0 12 8.5 8.5 0 1 1 0-12z' fill='white'/%3E%3Cpolygon points='44,32 49,34 46,29 46,35 49,30' fill='white'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <a class="skip" href="#content">Skip to content</a>
+  <a class="home" href="../" aria-label="Back to home">⟵ Home</a>
+  <div class="card" role="main" aria-labelledby="title">
+    <h1 id="title">to: annusha — the baddest b possible</h1>
+    <div class="row" id="content">
+      <div class="art" aria-hidden="true">
+        <span>     ✦    ~   .     ~     .     ✦    ~     .      ~   .   ~   .</span>
+        <br />
+        <span>        .    ~     .   ✦  ~      .     ~       .     ~   .</span>
+        <br /><br />
+        <span class="plane">                   __|__</span>
+        <br />
+        <span class="plane">            .-----/==+==\-----.</span>
+        <br />
+        <span class="plane">        __/______/|_o_o_|\______\__</span>
+        <br />
+        <span class="plane">       /____|   / |  _  | \   |____\</span>
+        <br />
+        <span class="detail">            \__/  | |_| |  \__/</span>
+        <br />
+        <span class="detail">              \     ___     /</span>
+        <br />
+        <span class="detail">               '---/___\---'</span>
+        <br />
+        <span class="contrail">        ---o--o-(</span><span class="plane">__</span><span class="contrail">)---o--o---</span>
+        <span class="hearts">   &lt;3   &lt;3   &lt;3   &lt;3</span>
+        <br />
+        <span class="contrail">                           ~    ~      ~     ~</span>
+        <br />
+        <span class="contrail">                              -------------------------------&gt;</span>
+      </div>
+      <div class="flag">
+        <span class="pole">│</span><span class="flagline"><span class="stripe-white"></span><span class="stripe-green"></span></span>
+        <span class="pole">│</span><span class="flagline"><span class="stripe-white"></span><span class="stripe-green"></span></span>
+        <span class="pole">│</span><span class="flagline"><span class="stripe-white"></span><span class="stripe-green"></span></span>
+        <span class="pole">│</span><span class="flagline"><span class="stripe-white"></span><span class="stripe-green"><span class="crescent">☾</span><span class="star">★</span></span></span>
+        <span class="pole">│</span><span class="flagline"><span class="stripe-white"></span><span class="stripe-green"></span></span>
+        <span class="pole">│</span><span class="flagline"><span class="stripe-white"></span><span class="stripe-green"></span></span>
+        <span class="pole">│</span><span class="flagline"><span class="stripe-white"></span><span class="stripe-green"></span></span>
+        <span class="pole">│__|_|____________________</span>
+      </div>
+    </div>
+    <div class="ps">p.s. sending you love, care, and a flirty tailwind — keep that smile for me <span style="color:var(--heart)">&lt;3</span></div>
+    <div class="small">[ a + annusha ]</div>
+  </div>
+  <script>
+    // Register root service worker
+    if ('serviceWorker' in navigator) { window.addEventListener('load', ()=> navigator.serviceWorker.register('../site-sw.js').catch(()=>{})); }
+    // Love Index overlay
+    (function(){
+      const style = document.createElement('style');
+      style.textContent = `.lovebtn{position:fixed; right:14px; bottom:14px; width:42px; height:42px; border-radius:50%; display:grid; place-items:center; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16); color:var(--muted); cursor:pointer; z-index:9999} .lovebtn:focus-visible{outline:2px solid #fff; outline-offset:2px} .loveidx{position:fixed; inset:0; display:none; z-index:10000} .loveidx.show{display:block} .loveidx .back{position:absolute; inset:0; background:rgba(0,0,0,.5)} .loveidx .panel{position:relative; margin:10vh auto; max-width:620px; background:rgba(20,16,26,.92); border:1px solid rgba(255,255,255,.16); border-radius:10px; padding:14px; color:var(--fg); box-shadow:0 20px 40px rgba(0,0,0,.4)}`;
+      document.head.appendChild(style);
+      const wrap = document.createElement('div'); wrap.className='loveidx';
+      const back = document.createElement('div'); back.className='back';
+      const panel = document.createElement('div'); panel.className='panel'; panel.role='dialog'; panel.ariaModal='true';
+      const h = document.createElement('h2'); h.textContent = 'Love Index'; panel.appendChild(h);
+      const nav = document.createElement('nav'); nav.setAttribute('aria-label','Love Index');
+      const home = '../';
+      [['Home', home], ['Notepad Letter', home+'notepad.html'], ['Love Flight', home+'annusha-love-flight/index.html'], ['Flag + Plane', home+'art/annusha_plane_flag.html'], ['Cubist Plane', home+'art/annusha_cubist_plane.html'], ['Notepad Frames', home+'art/notepad_frames.html']]
+        .forEach(([n,u])=>{ const a=document.createElement('a'); a.href=u; a.textContent=n; nav.appendChild(a); });
+      panel.appendChild(nav); wrap.appendChild(back); wrap.appendChild(panel); document.body.appendChild(wrap);
+      function open(){ wrap.classList.add('show'); (panel.querySelector('a')||panel).focus(); }
+      function close(){ wrap.classList.remove('show'); btn.focus(); }
+      back.addEventListener('click', close);
+      window.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && wrap.classList.contains('show')) close(); if(e.key==='?' || (e.shiftKey && e.key==='/')) open(); });
+      const btn = document.createElement('button'); btn.className='lovebtn'; btn.type='button'; btn.setAttribute('aria-label','Open Love Index'); btn.textContent='❤'; btn.addEventListener('click', open); document.body.appendChild(btn);
+    })();
+    // Soft page transitions (flow)
+    (function(){
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const s2 = document.createElement('style'); s2.textContent = `body.fade-init{opacity:0} body.fade-in{opacity:1; transition:opacity .3s ease}`; document.head.appendChild(s2);
+      document.body.classList.add('fade-init'); requestAnimationFrame(()=>{ if(!reduce){ document.body.classList.add('fade-in'); }});
+      document.addEventListener('click',(e)=>{
+        const a = e.target.closest('a[href]'); if(!a) return;
+        const url = new URL(a.href, location.href);
+        if (url.origin === location.origin) { if(!reduce){ e.preventDefault(); document.body.classList.remove('fade-in'); setTimeout(()=>{ location.href = a.href; }, 180); } }
+      }, true);
+    })();
+  </script>
+</body>
+<!-- You can host this file anywhere (GitHub Pages, Notion, Drive preview). It is self‑contained. -->
+</html>
